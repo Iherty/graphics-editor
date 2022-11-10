@@ -23,8 +23,30 @@ function getMousePos(canvas, event) {
 }
 
 // Draw a line
-function lineDraw1(event) { 
-    let arr = getMousePos(canvas, event);
+let isMouseDown = false;
+let downX;
+let downY;
+
+function lineMouseDownHandler(event) { 
+    let xy = getMousePos(canvas, event);
+    downX = xy[0];
+    downY = xy[1];
+    isMouseDown = true;
+}
+
+function lineMouseUpHandler() { 
+    isMouseDown = false;
+}
+
+function lineMouseMoveHandler(event) {
+    
+    if(!isMouseDown) {
+        return
+    }
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let xy = getMousePos(canvas, event);
     ctx.beginPath();
     ctx.lineTo(arr[0], arr[1]);
 }
