@@ -5,7 +5,7 @@ let ctx = canvas.getContext('2d');
 let lineButton = document.getElementById('line');
 let circleButton = document.getElementById('circle');
 
-// Events
+// Events.0
 canvas.addEventListener('mousedown', lineMouseDownHandler);
 canvas.addEventListener('mouseup', lineMouseUpHandler);
 canvas.addEventListener('mousemove', lineMouseMoveHandler);

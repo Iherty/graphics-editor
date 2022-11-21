@@ -1,5 +1,6 @@
 let canvas = document.getElementById('canvas'); // Получаем элемент
 let ctx = canvas.getContext('2d'); // Будем работать в контексте 2д
+// https://developer.mozilla.org/ru/docs/Web/API/CanvasRenderingContext2D/ellipse
 
 // Draw 'G'
 ctx.fillRect(200, 0, 100, 100);

@@ -1,19 +1,8 @@
 'use strict'
 
-let canvas = document.getElementById('canvas'); 
+let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
-let lineButton = document.getElementById('line');
-let circleButton = document.getElementById('circle');
-let polylineButton = document.getElementById('polyline');
 
-// Events
-
-canvas.addEventListener('mousedown', polylineMouseDownHandler);
-canvas.addEventListener('contextmenu', polylineCtxMenuHandler);
-canvas.addEventListener('mousemove', polylineMouseMoveHandler);
-
-
-// Functions
 class Handlers {
 
     #downX = null;
@@ -108,5 +97,5 @@ canvas.addEventListener('contextmenu', function(event) { polyline.polylineCtxMen
 canvas.addEventListener('mousemove', function(event) { polyline.polylineMouseMoveHandler(event) });
 
 
-
-
+// let poly = new Polyline([100, 50, 200, 100, 250, 150, 350, 390]);
+// poly.draw();

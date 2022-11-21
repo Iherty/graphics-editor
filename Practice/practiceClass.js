@@ -1,83 +1,80 @@
 'use strict'
 
-let canvas = document.getElementById('canvas'); 
+let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 
-class Canvas {
-    static savedPos = [];
+class LineDrawer {
 
-    getMousePos(canvas, event) {
-        let rect = canvas.getBoundingClientRect(); 
-        let x = event.clientX - rect.left;
-        let y = event.clientY - rect.top;
-        return [x, y]
-    }
-
-    savePositions() {
-        Canvas.savedPos.push(canvas.startPosX);
-        Canvas.savedPos.push(canvas.startPosY);
-        Canvas.savedPos.push(canvas.endPosXY[0]);
-        Canvas.savedPos.push(canvas.endPosXY[1]);
-    }
-
-    assignPosFig() {
-        this.startPosX = Canvas.savedPos[0];
-        this.startPosY = Canvas.savedPos[1];
-        this.endPosX = Canvas.savedPos[2];
-        this.endPosY = Canvas.savedPos[3]
-    }
-
-}
-
-
-class Line extends Canvas {
-
-    constructor() {
-        super(...arguments);
-    }
-
-    lineMouseDownHandler(event) { 
-        this.endPosXY = super.getMousePos(canvas, event);
-        this.startPosX = this.endPosXY[0];
-        this.startPosY = this.endPosXY[1];
-        this.isMouseDown = true;
-    }
-
-    lineMouseUpHandler() { 
-        this.isMouseDown = false;
-        super.savePositions();
-    }
-
-    lineMouseMoveHandler(event) { 
-    
-        if(!this.isMouseDown) {
-            return
-        }
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        this.endPosXY = super.getMousePos(canvas, event);
+    draw() {
         ctx.beginPath();
-        ctx.moveTo(this.startPosX, this.startPosY);
-        ctx.lineTo(this.endPosXY[0], this.endPosXY[1]);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'black';
-        ctx.stroke();
 
+        if (this.style !== 'solid') {
+            ctx.setLineDash(this.style);
+        }
+
+        ctx.moveTo(this.coordinates[0], this.coordinates[1]);
+        ctx.lineTo(this.coordinates[2], this.coordinates[3]);
+        ctx.lineWidth = this.width;
+        ctx.strokeStyle = this.color;
+        ctx.stroke();
     }
 
 }
 
-class Line {
-    
+class Line extends LineDrawer {
+
+    constructor(coordinatesArr, width = 2, color = 'black', style = 'solid') {
+        super(arguments);
+        this.coordinates = coordinatesArr;
+        this.width = width;
+        this.color = color;
+
+        if (style === 'dashed') {
+            this.style = [20, 5];
+        } else if (style === 'dotted') {
+            this.style = [5, 15];
+        } else {
+            this.style = style;
+        }
+    }
 }
 
-let lineOne = new Line();
-canvas.addEventListener('mousedown', lineOne.lineMouseDownHandler);
-canvas.addEventListener('mouseup', lineOne.lineMouseUpHandler);
-canvas.addEventListener('mousemove', lineOne.lineMouseMoveHandler);
+class Polyline extends PolylineDrawer{
 
-console.log(Canvas.savedPos)
+    constructor(coordinatesArr, width = 2, color = 'black') {
+        super(arguments)
+        this.coordinates = coordinatesArr; 
+        this.width = width;
+        this.color = color;
+
+    }
+}
+
+class PolylineDrawer {
+
+    draw() {
+        let saveCrdns = [];
+
+        for(let i = 2; i < this.coordinates.length; i++) {
+            saveCrdns.push(ctx.lineTo(this.coordinates[i], this.coordinates[i + 1]))
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(this.coordinates[0], this.coordinates[1]);
+        // [100, 50, 60, 200, 195, 85]
+
+        
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 
