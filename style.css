@@ -1,23 +1,7 @@
 
 #canvas {
-    border: 2px solid black;
+    border: 1px solid black;
     /* background-image: url('background.png'); */
-}
-
-
-
-
-#child1 {
-    background-color: aliceblue;
-    margin: 5px;
-}
-
-#child2 {
-    /* background-color: aliceblue; */
-    margin: 5px;
-    /* padding-right: 15px; */
-    display: flex;
-    flex-direction: column;
 }
 
 #container {
@@ -26,6 +10,30 @@
     align-items: center;
     margin: 100px;
 }
+
+
+
+#canvasСontainer {
+    background-color: aliceblue;
+    margin: 5px;
+}
+
+#buttonСontainer {
+    /* background-color: aliceblue; */
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+#buttonСontainerGroup1, #buttonСontainerGroup2 {
+    display: flex;
+    flex-direction: column;
+}
+
+/* #buttonСontainerGroup2 {
+    display: flex;
+    flex-direction: column;
+} */
 
 button {
     margin: 5px;
