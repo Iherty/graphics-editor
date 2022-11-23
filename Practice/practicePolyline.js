@@ -2,16 +2,9 @@
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
-let lineButton = document.getElementById('line');
-let circleButton = document.getElementById('circle');
-let polylineButton = document.getElementById('polyline');
 
 // Events
-
-canvas.addEventListener('mousedown', polylineMouseDownHandler);
-canvas.addEventListener('contextmenu', polylineCtxMenuHandler);
-canvas.addEventListener('mousemove', polylineMouseMoveHandler);
-
+let drawnPolylines = [];
 
 // Functions
 class Handlers {
@@ -19,15 +12,14 @@ class Handlers {
     #downX = null;
     #downY = null;
     #isClick = false;
-    #cache; // Для хранения данных объектов new Polyline - идея. 
 
     polylineMouseDownHandler(event) {
 
         if (event.button == 0) {
-            this.getDownPos = getMousePos(canvas, event);
-            this.#downX = this.getDownPos[0];
-            this.#downY = this.getDownPos[1];
-            this.coordinates.push(this.getDownPos[0], this.getDownPos[1])
+            this.downCoordinates = getMousePos(canvas, event);
+            this.#downX = this.downCoordinates[0];
+            this.#downY = this.downCoordinates[1];
+            this.coordinates.push(this.downCoordinates[0], this.downCoordinates[1])
             this.#isClick = true;
         }
     
@@ -39,11 +31,11 @@ class Handlers {
         }
     
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.xy = getMousePos(canvas, event);
+        this.endMousePos = getMousePos(canvas, event);
 
         ctx.beginPath() // visualize mouse movement
         ctx.moveTo(this.#downX, this.#downY);
-        ctx.lineTo(this.xy[0], this.xy[1]);
+        ctx.lineTo(this.endMousePos[0], this.endMousePos[1]);
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.color;
         ctx.stroke();
@@ -51,15 +43,20 @@ class Handlers {
          if(this.coordinates.length > 2) {
             this.draw(); // draws previous lines
          }
-    
+         
+         if(drawnPolylines.length > 1) {
+            drawnPolylines[0].draw();
+         }
     }
 
     polylineCtxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
-        this.xy = getMousePos(canvas, event);
-        this.coordinates.push(this.xy[0], this.xy[1]);
-        
+
+        this.endMousePos = getMousePos(canvas, event);
+        this.coordinates.push(this.endMousePos[0], this.endMousePos[1]);
+        drawnPolylines.push(this.slice());
+        console.log(drawnPolylines)
     }
 }
 
@@ -88,7 +85,6 @@ class Polyline extends PolylineDrawer{
         this.coordinates = coordinates; 
         this.width = width;
         this.color = color;
-
     }
 
 }
@@ -101,11 +97,16 @@ function getMousePos(canvas, event) {
     return [x, y]
 }
 
-let polyline = new Polyline();
+let polyl = new Polyline();
 
-canvas.addEventListener('mousedown', function(event) { polyline.polylineMouseDownHandler(event) });
-canvas.addEventListener('contextmenu', function(event) { polyline.polylineCtxMenuHandler(event) });
-canvas.addEventListener('mousemove', function(event) { polyline.polylineMouseMoveHandler(event) });
+canvas.addEventListener('mousedown', function(event) { 
+    // polyl = new Polyline();
+    polyl.polylineMouseDownHandler(event)});
+canvas.addEventListener('mousemove', function(event) { polyl.polylineMouseMoveHandler(event) });
+canvas.addEventListener('contextmenu', function(event) { 
+        polyl.coordinates = [];
+        polyl.polylineCtxMenuHandler(event) 
+    });
 
 
 

@@ -11,8 +11,6 @@
     margin: 100px;
 }
 
-
-
 #canvasСontainer {
     background-color: aliceblue;
     margin: 5px;
@@ -23,6 +21,7 @@
     margin: 5px;
     display: flex;
     flex-direction: row;
+    
 }
 
 #buttonСontainerGroup1, #buttonСontainerGroup2 {
