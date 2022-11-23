@@ -11,7 +11,7 @@ function getMousePos(canvas, event) {
 
 class Polyline {
 
-    static savesPolylines = [0, 1];
+    static savesPolylines = [];
 
     constructor(coordinates = [], width = 2, color = 'black') {
         //super(arguments);
@@ -49,85 +49,104 @@ class PolylineDrawer {
 
 class PolylineHandlers {
     #isClick = false;
+    #downCoordinates;
+    #endLineCoordinates;
+    #lastCoordinates;
+    #polyline = new Polyline();
+    #pCreatedCallbacks = [];
 
-    polylineMouseDownHandler(event, obj) {
-
+    mouseDownHandler(event) {
+    
         if (event.button == 0) { // if clicked on the left mouse button
-            [this.startLineX, this.startLineY] = getMousePos(canvas, event);
+            this.#downCoordinates = getMousePos(canvas, event);
+            this.#isClick = true;
 
             // Save coordinates to polyline object
-            this.coordinates.push(this.startLineX, this.startLineY);
-            this.#isClick = true;
+            this.#polyline.coordinates.push(this.#downCoordinates[0], this.#downCoordinates[1]);
         }
     
     }
 
-    polylineMouseMoveHandler(event, obj) {
+    
+    mouseMoveHandler(event) {
 
         if (!this.#isClick) {
             return
         }
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        [this.endLineX, this.endLineY] = getMousePos(canvas, event);
+        this.#endLineCoordinates = getMousePos(canvas, event);
+        
 
         // Draw polylines every time the mouse moves. This will help render the polyline.
         // But this will add extra line drawings. Which we remove by ctx.clearRect
-        ctx.moveTo(this.startLineX, this.startLineY);
-        ctx.lineTo(this.endLineX, this.endLineY);
-        ctx.lineWidth = this.width;
-        ctx.strokeStyle = this.color;
+        ctx.beginPath();
+        ctx.moveTo(this.#downCoordinates[0], this.#downCoordinates[1]);
+        ctx.lineTo(this. #endLineCoordinates[0], this. #endLineCoordinates[1]);
+        ctx.lineWidth = this.#polyline.width;
+        ctx.strokeStyle = this.#polyline.color;
         ctx.stroke();
         
         // ctx.clearRect will clear the entire canvas. 
         // the code below will help to permanently animate the lines of the polyline
-        if (this.coordinates.length > 2) {
-            new PolylineDrawer().draw(this.coordinates, this.width, this.color);
+        if (this.#polyline.coordinates.length > 2) {
+            new PolylineDrawer().draw(this.#polyline.coordinates, this.#polyline.width, this.#polyline.color);
         }
          
-        //  if(drawnPolylines.length > 1) {
-        //     drawnPolylines[0].draw();
-        //  }
     }
 
-    polylineCtxMenuHandler(event, obj) {
+    ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
+        this.#lastCoordinates = getMousePos(canvas, event);
+        this.#polyline.coordinates.push(this.#lastCoordinates[0], this.#lastCoordinates[1]);
 
-        [this.lastX, this.lastY] = getMousePos(canvas, event);
-        this.coordinates.push(this.lastX, this.lastY);
-        Polyline.savesPolylines.push(this.slice());
+        console.log(this.#pCreatedCallbacks);
+        this.#pCreatedCallbacks.forEach(item => item(this.#polyline));
+        this.#polyline = new Polyline();
+    }
+
+    addPolylineCreatedEventListener(callback) {
+        this.#pCreatedCallbacks.push(callback)
     }
 
 }
 
-function animate() {
 
-    if (Polyline.savesPolylines.length > 0) {
+let obj = {
+    drawnPolyline: [],
 
-        for (let i = 0; i < Polyline.savesPolylines.length; i++) {
-            new PolylineDrawer().draw(Polyline.savesPolylines[i].coordinates);
+    getDrawnPolyline(polyline) {
+        let clone = {...polyline}
+        obj.drawnPolyline.push(clone);
+        console.log(this.drawnPolyline);
+    },
+
+    animate() {
+
+        if (this.drawnPolyline.length > 0) {
+    
+            for (let i = 0; i < this.drawnPolyline.length; i++) {
+                new PolylineDrawer().draw(this.drawnPolyline[i].coordinates);
+            }
+    
         }
-
+    
     }
 
 }
 
 
-let poly = new Polyline();
 
-canvas.addEventListener('mousedown', function(event) { 
-    let handler = new PolylineHandlers().polylineMouseDownHandler;
-    poly.handler(event);
-    requestAnimationFrame(animate);
-});
-canvas.addEventListener('mousemove', function(event) { 
-    new PolylineHandlers().polylineMouseMoveHandler.call(poly, event);
-    requestAnimationFrame(animate); 
-});
-canvas.addEventListener('contextmenu', function(event) { 
-    new PolylineHandlers().polylineCtxMenuHandler.call(poly, event); 
-    poly.coordinates = [];   
-    requestAnimationFrame(animate);
-    });
+
+let polylineHandler = new PolylineHandlers();
+polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
+
+
+canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) 
+    if (obj.drawnPolyline.length > 0) obj.animate() });
+canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) 
+    if (obj.drawnPolyline.length > 0) obj.animate() });
+canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) 
+    obj.animate()});
 
