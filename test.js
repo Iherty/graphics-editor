@@ -1,59 +1,19 @@
 'use strict'
 
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
+var c = document.getElementById("canvas");
+var ctx = c.getContext("2d");
 
-class PolylineDrawer {
+var rectXPos = 50;
+var rectYPos = 50;
+var rectWidth = 100;
+var rectHeight = 100;
 
-    draw(coordinates, width = 2, color = 'black') {
+drawBorder(rectXPos, rectYPos, rectWidth, rectHeight)
 
-        ctx.beginPath();
-        for(let i = 0; i < coordinates.length;) {
-            ctx.lineTo(coordinates[i], coordinates[i + 1]);
-            i = i + 2;
-        }
+ctx.fillStyle = '#FFF';
+ctx.fillRect(rectXPos, rectYPos, rectWidth, rectHeight);
 
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
-        ctx.stroke();
-        
-    }
+function drawBorder(xPos, yPos, width, height, thickness = 1) {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
 }
-
-class Polyline {
-
-    static savesPolylines = [0, 1];
-
-    constructor(coordinates = [], width = 2, color = 'black') {
-        //super(arguments);
-        this.coordinates = coordinates; 
-        this.width = width;
-        this.color = color;
-
-        // if (style === 'dashed') {
-        //     this.style = [20, 5];
-        // } else if (style === 'dotted') {
-        //     this.style = [5, 15];
-        // } else {
-        //     this.style = 'solid';
-        // }
-    }
-
-}
-
-let polyline = [{coordinates: [100, 200, 50, 70]}, {coordinates: [210, 300, 170, 150]}, {coordinates: [310, 400, 290, 370]},]
-
-function animate() {
-
-    if (polyline.length > 0) {
-
-        for (let i = 0; i < polyline.length; i++) {
-            new PolylineDrawer().draw(polyline[i].coordinates);
-        }
-
-    }
-
-}
-
-requestAnimationFrame(animate);
-

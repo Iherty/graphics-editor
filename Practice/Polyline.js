@@ -13,35 +13,35 @@ class Polyline {
 
     static savesPolylines = [];
 
-    constructor(coordinates = [], width = 2, color = 'black') {
+    constructor(coordinates = [], width = 2, color = 'black', style = 'solid') {
         //super(arguments);
         this.coordinates = coordinates; 
         this.width = width;
         this.color = color;
+        this.style = style;
 
-        // if (style === 'dashed') {
-        //     this.style = [20, 5];
-        // } else if (style === 'dotted') {
-        //     this.style = [5, 15];
-        // } else {
-        //     this.style = 'solid';
-        // }
     }
 
 }
 
 class PolylineDrawer {
 
-    draw(coordinates, width = 2, color = 'black') {
+    draw(polyline) {
 
         ctx.beginPath();
-        for(let i = 0; i < coordinates.length;) {
-            ctx.lineTo(coordinates[i], coordinates[i + 1]);
+
+        if (polyline.style !== 'solid') {
+            if (polyline.style === 'dashed') ctx.setLineDash([20, 5]);
+            if (polyline.style === 'dotted') ctx.setLineDash([5, 15]);
+        }
+
+        for(let i = 0; i < polyline.coordinates.length;) {
+            ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
             i = i + 2;
         }
 
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
+        ctx.lineWidth = polyline.width;
+        ctx.strokeStyle = polyline.color;
         ctx.stroke();
         
     }
@@ -49,20 +49,20 @@ class PolylineDrawer {
 
 class PolylineHandlers {
     #isClick = false;
-    #downCoordinates;
-    #endLineCoordinates;
-    #lastCoordinates;
+    #startLinePos;
+    #endLinePos;
+    #lastMousePos;
     #polyline = new Polyline();
-    #pCreatedCallbacks = [];
+    #polCreatedCallbacks = [];
 
     mouseDownHandler(event) {
     
         if (event.button == 0) { // if clicked on the left mouse button
-            this.#downCoordinates = getMousePos(canvas, event);
+            this.#startLinePos = getMousePos(canvas, event);
             this.#isClick = true;
 
             // Save coordinates to polyline object
-            this.#polyline.coordinates.push(this.#downCoordinates[0], this.#downCoordinates[1]);
+            this.#polyline.coordinates.push(this.#startLinePos[0], this.#startLinePos[1]);
         }
     
     }
@@ -75,14 +75,14 @@ class PolylineHandlers {
         }
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.#endLineCoordinates = getMousePos(canvas, event);
+        this.#endLinePos = getMousePos(canvas, event);
         
 
         // Draw polylines every time the mouse moves. This will help render the polyline.
         // But this will add extra line drawings. Which we remove by ctx.clearRect
         ctx.beginPath();
-        ctx.moveTo(this.#downCoordinates[0], this.#downCoordinates[1]);
-        ctx.lineTo(this. #endLineCoordinates[0], this. #endLineCoordinates[1]);
+        ctx.moveTo(this.#startLinePos[0], this.#startLinePos[1]);
+        ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
         ctx.lineWidth = this.#polyline.width;
         ctx.strokeStyle = this.#polyline.color;
         ctx.stroke();
@@ -90,7 +90,7 @@ class PolylineHandlers {
         // ctx.clearRect will clear the entire canvas. 
         // the code below will help to permanently animate the lines of the polyline
         if (this.#polyline.coordinates.length > 2) {
-            new PolylineDrawer().draw(this.#polyline.coordinates, this.#polyline.width, this.#polyline.color);
+            new PolylineDrawer().draw(this.#polyline);
         }
          
     }
@@ -98,22 +98,22 @@ class PolylineHandlers {
     ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
-        this.#lastCoordinates = getMousePos(canvas, event);
-        this.#polyline.coordinates.push(this.#lastCoordinates[0], this.#lastCoordinates[1]);
+        this.#lastMousePos = getMousePos(canvas, event);
+        this.#polyline.coordinates.push(this.#lastMousePos[0], this.#lastMousePos[1]);
 
-        console.log(this.#pCreatedCallbacks);
-        this.#pCreatedCallbacks.forEach(item => item(this.#polyline));
+        console.log(this.#polCreatedCallbacks);
+        this.#polCreatedCallbacks.forEach(item => item(this.#polyline));
         this.#polyline = new Polyline();
     }
 
     addPolylineCreatedEventListener(callback) {
-        this.#pCreatedCallbacks.push(callback)
+        this.#polCreatedCallbacks.push(callback)
     }
 
 }
 
 
-let obj = {
+let obj = { // Черновой объект для тестированяи функциональности
     drawnPolyline: [],
 
     getDrawnPolyline(polyline) {
@@ -127,7 +127,7 @@ let obj = {
         if (this.drawnPolyline.length > 0) {
     
             for (let i = 0; i < this.drawnPolyline.length; i++) {
-                new PolylineDrawer().draw(this.drawnPolyline[i].coordinates);
+                new PolylineDrawer().draw(this.drawnPolyline[i]);
             }
     
         }
@@ -135,8 +135,6 @@ let obj = {
     }
 
 }
-
-
 
 
 let polylineHandler = new PolylineHandlers();
