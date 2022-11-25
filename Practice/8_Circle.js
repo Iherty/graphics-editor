@@ -76,12 +76,11 @@ class CircleHandlers {
 
     mouseMoveHandler(event) {
 
-        if(!this.#isMouseDown) {
+        if (!this.#isMouseDown) {
             return
         }
-        
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
         this.#endXY = getMousePos(canvas, event);
 
         if (this.#circle.coordinates.length === 2) {
@@ -89,13 +88,13 @@ class CircleHandlers {
         } else {
             this.#circle.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1])
         }
-        
+
         this.#drawer.draw(this.#circle);
 
         // this.#avrX = (Math.abs(this.#startXY[0] - this.#endXY[0]) / 2) + Math.min(this.#startXY[0], this.#endXY[0]);
         // this.#avrY = (Math.abs(this.#startXY[1] - this.#endXY[1]) / 2) + Math.min(this.#startXY[1], this.#endXY[1]);
         // this.#radius = Math.max( Math.abs(this.#startXY[0] - this.#endXY[0]), Math.abs(this.#startXY[1] - this.#endXY[1]) ) / 2;
-        
+
         // //this.#circle.isFill = true;
 
         // ctx.beginPath();
@@ -110,7 +109,7 @@ class CircleHandlers {
 
         //     new CircleDraw().drawBorder(this.#avrX, this.#avrY, this.#radius, this.#circle.lineWidth, this.#circle.lineColor);
         // }
-    
+
     }
 
     mouseUpHandler(event) {
@@ -169,3 +168,15 @@ canvas.addEventListener('mouseup', function(event) {
 });
 
 requestAnimationFrame(testObj.animation.bind(testObj));
+
+function circleDownHandler(event) {
+    circleHandlers.mouseDownHandler(event);
+}
+
+function circleMoveHandler(event) {
+    circleHandlers.mouseMoveHandler(event);
+}
+
+function circleUpHandler(event) {
+    circleHandlers.mouseUpHandler(event)
+}

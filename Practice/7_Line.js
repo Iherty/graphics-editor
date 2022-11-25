@@ -40,18 +40,17 @@ class LineDrawer {
 }
 
 class LineHandlers {
-    #startCoordinates;
-    #endCoordinates;
-    #lastCoordinates;
+    #startXY;
+    #endXY;
     #isMouseDown = false;
     #line = new Line();
     #lineCreatedCallbacks = [];
+    #drawer = new LineDrawer();
 
     mouseDownHandler(event) { 
-        this.#startCoordinates = getMousePos(canvas, event);
+        this.#startXY = getMousePos(canvas, event);
         this.#isMouseDown = true;
-
-        this.#line.coordinates.push(this.#startCoordinates[0], this.#startCoordinates[1])
+        this.#line.coordinates.push(this.#startXY[0], this.#startXY[1])
     }
 
     mouseMoveHandler(event) {
@@ -61,21 +60,29 @@ class LineHandlers {
         }
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.#endCoordinates = getMousePos(canvas, event);
-    
-        ctx.beginPath();
-        ctx.moveTo(this.#startCoordinates[0], this.#startCoordinates[1]);
-        ctx.lineTo(this.#endCoordinates[0], this.#endCoordinates[1]);
-        ctx.lineWidth = this.#line.width;
-        ctx.strokeStyle = this.#line.color;
-        ctx.stroke();
+        this.#endXY = getMousePos(canvas, event);
+        
+        if (this.#line.coordinates.length === 2) {
+            this.#line.coordinates.push(this.#endXY[0], this.#endXY[1]);
+        } else {
+            this.#line.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1])
+        }
+
+        this.#drawer.draw(this.#line);
+
+        // ctx.beginPath();
+        // ctx.moveTo(this.#startXY[0], this.#startXY[1]);
+        // ctx.lineTo(this.#endXY[0], this.#endXY[1]);
+        // ctx.lineWidth = this.#line.width;
+        // ctx.strokeStyle = this.#line.color;
+        // ctx.stroke();
     
     }
 
     mouseUpHandler(event) { 
         this.#isMouseDown = false;
-        this.#lastCoordinates = getMousePos(canvas, event); // лишний код убрать
-        this.#line.coordinates.push(this.#lastCoordinates[0], this.#lastCoordinates[1]);
+        this.#endXY = getMousePos(canvas, event);
+        this.#line.coordinates.push(this.#endXY[0], this.#endXY[1]);
 
         console.log(this.#lineCreatedCallbacks)
         this.#lineCreatedCallbacks.forEach(item => item(this.#line));
@@ -93,8 +100,12 @@ let testObj = {
 
     getLine(line) {
         let clone = {...line};
-        this.drawnLines.push(clone);
-        console.log(this.drawnLines)
+
+        if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) {
+            this.drawnLines.push(clone);
+            console.log(this.drawnLines)
+        }
+    
     },
 
     animation() {
@@ -105,20 +116,15 @@ let testObj = {
                 new LineDrawer().draw(this.drawnLines[i]);
             }
         }
+
+        requestAnimationFrame(testObj.animation.bind(testObj));
     }
 }
 
 lineHandlers.addLineCreatedEventListener(testObj.getLine.bind(testObj));
 
-canvas.addEventListener('mousedown', function(event) {
-    lineHandlers.mouseDownHandler(event);
-    testObj.animation();
-});
-canvas.addEventListener('mouseup', function(event) {
-    lineHandlers.mouseUpHandler(event);
-    testObj.animation();
-})
-canvas.addEventListener('mousemove', function(event) {
-    lineHandlers.mouseMoveHandler(event)
-    testObj.animation();
-});
+canvas.addEventListener('mousedown', function(event) {lineHandlers.mouseDownHandler(event)});
+canvas.addEventListener('mouseup', function(event) {lineHandlers.mouseUpHandler(event)})
+canvas.addEventListener('mousemove', function(event) {lineHandlers.mouseMoveHandler(event)});
+
+requestAnimationFrame(testObj.animation.bind(testObj));
