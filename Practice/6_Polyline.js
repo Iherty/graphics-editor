@@ -51,9 +51,9 @@ class PolylineHandlers {
     #isClick = false;
     #startLinePos;
     #endLinePos;
-    #lastMousePos;
     #polyline = new Polyline();
     #polCreatedCallbacks = [];
+    #drawer = new PolylineDrawer();
 
     mouseDownHandler(event) {
     
@@ -90,7 +90,7 @@ class PolylineHandlers {
         // ctx.clearRect will clear the entire canvas. 
         // the code below will help to permanently animate the lines of the polyline
         if (this.#polyline.coordinates.length > 2) {
-            new PolylineDrawer().draw(this.#polyline);
+            this.#drawer.draw(this.#polyline);
         }
          
     }
@@ -98,8 +98,8 @@ class PolylineHandlers {
     ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
-        this.#lastMousePos = getMousePos(canvas, event);
-        this.#polyline.coordinates.push(this.#lastMousePos[0], this.#lastMousePos[1]);
+        this.#endLinePos = getMousePos(canvas, event);
+        this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
 
         console.log(this.#polCreatedCallbacks);
         this.#polCreatedCallbacks.forEach(item => item(this.#polyline));
@@ -141,10 +141,7 @@ let polylineHandler = new PolylineHandlers();
 polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
 
 
-canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) 
-    if (obj.drawnPolyline.length > 0) obj.animate() });
-canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) 
-    if (obj.drawnPolyline.length > 0) obj.animate() });
-canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) 
-    obj.animate()});
+canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) });
+canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) });
+canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) });
 
