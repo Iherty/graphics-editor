@@ -12,7 +12,7 @@ function getMousePos(canvas, event) {
 
 class Circle {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 2, lineColor = 'black', fillColor = 'white') {
+    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'white') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -37,7 +37,7 @@ class CircleDraw {
 
         ctx.arc(this.#avrX, this.#avrY, this.#radius, 0, 2 * Math.PI);
         if (!circle.isFill) {
-            ctx.lineWidth = circle.width;
+            ctx.lineWidth = circle.lineWidth;
             ctx.strokeStyle = circle.lineColor;
             ctx.stroke();
         } else {

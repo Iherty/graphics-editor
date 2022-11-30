@@ -13,7 +13,7 @@ class Polyline {
 
     static savesPolylines = [];
 
-    constructor(coordinates = [], width = 2, color = 'black', style = 'solid') {
+    constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
         //super(arguments);
         this.coordinates = coordinates; 
         this.width = width;
