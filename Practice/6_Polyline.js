@@ -118,7 +118,7 @@ let obj = { // Черновой объект для тестированяи ф�
 
     getDrawnPolyline(polyline) {
         let clone = {...polyline}
-        obj.drawnPolyline.push(clone);
+        obj.drawnPolygon.push(clone);
         console.log(this.drawnPolyline);
     },
 
@@ -131,6 +131,8 @@ let obj = { // Черновой объект для тестированяи ф�
             }
     
         }
+
+        requestAnimationFrame(obj.animation.bind(obj));
     
     }
 
@@ -144,4 +146,6 @@ polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
 canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) });
 canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) });
 canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) });
+
+requestAnimationFrame(obj.animation.bind(obj));
 
