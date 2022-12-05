@@ -13,31 +13,42 @@
     <div id="container">
         
         <div id="canvasСontainer">
-            <canvas id="canvas" width="600" height="400"></canvas> 
+            <canvas id="canvas" width="800" height="500"></canvas> 
         </div>
 
         <div id="tools">
 
-            <div id="buttonСontainer">
+            <fieldset>
+                <legend id="tools-group-name">Инструменты</legend>
+                <div id="buttonСontainer">
 
-                <div id="buttonСontainerGroup1">
-                    <button id="pointer">Указатель</button>
-                    <button id="line">Линия</button>
-                    <button id="circle">Окружность</button>
-                    <button id="clearCanvas">Очистить</button>
+                    <div id="buttonСontainerGroup1">
+                        <button id="pointer">Указатель</button>
+                        <button id="line">Линия</button>
+                        <button id="circle">Окружность</button>
+                        <button id="clearCanvas">Очистить</button>
+                    </div>
+                    
+                    <div id="buttonСontainerGroup2">
+                        <button id="polyline">Полилиния</button>
+                        <button id="polygon">Многоугольник</button>
+                        <button id="ellipse">Эллипс</button>
+                    </div>
+                    
                 </div>
-                
-                <div id="buttonСontainerGroup2">
-                    <button id="polyline">Полилиния</button>
-                    <button id="polygon">Многоугольник</button>
-                    <button id="ellipse">Эллипс</button>
-                </div>
-                
-            </div>
+            </fieldset>
 
-            <div id="properties">
-                
-            </div>
+            <fieldset id="tools-fieldset">
+
+                <legend id="tools-group-name">Свойства</legend>
+                <div id="properties">
+                    <p>Толщина линии</p>
+                    <p>Цвет линии</p>
+                    <p>Цвет заливки</p>
+                    <p>Тип линии</p>
+                </div>
+
+            </fieldset>
         </div>
         
     </div>

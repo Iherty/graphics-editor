@@ -1,27 +1,46 @@
 
 #canvas {
     border: 1px solid black;
+    background-color: aliceblue;
     /* background-image: url('background.png'); */
 }
 
 #container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     margin: 100px;
+    /* border: 1px solid black; */
 }
 
 #canvasСontainer {
-    background-color: aliceblue;
-    margin: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+#tools {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+
+
+fieldset {
+    border: 1px solid grey;
+}
+
+#tools-fieldset {
+    margin-top: 10px;
 }
 
 #buttonСontainer {
-    /* background-color: aliceblue; */
-    margin: 5px;
+    padding: 5px;
     display: flex;
     flex-direction: row;
-    
 }
 
 #buttonСontainerGroup1, #buttonСontainerGroup2 {
@@ -29,11 +48,11 @@
     flex-direction: column;
 }
 
-/* #buttonСontainerGroup2 {
-    display: flex;
-    flex-direction: column;
-} */
-
 button {
     margin: 5px;
+}
+
+
+p {
+    padding-left: 10px;
 }
