@@ -59,7 +59,7 @@ button {
 
 #properties-form {
     /* border: 1px solid black; */
-    padding-top: 1em;
+    padding-top: 0.7em;
     padding-left: 15px;
     display: flex;
     flex-direction: column;

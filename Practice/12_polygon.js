@@ -3,6 +3,7 @@
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
 let polygonButton = document.getElementById('polygon');
+let clearButton = document.getElementById('clearCanvas');
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -125,26 +126,38 @@ class PolygonHandlers {
     }
 }
 
+let id;
+
 let obj = { // Черновой объект для тестированяи функциональности
     drawnPolygon: [],
+    cache: [],
 
     getDrawnPolygon(polyline) {
         let clone = {...polyline}
-        obj.drawnPolygon.push(clone);
+        this.drawnPolygon.push(clone);
         console.log(this.drawnPolygon);
     },
 
     animate() {
         
         if (this.drawnPolygon.length > 0) {
-            
+            let draw = new PolygonDrawer();
+
             for (let i = 0; i < this.drawnPolygon.length; i++) {
-                new PolygonDrawer().draw(this.drawnPolygon[i]);
+                draw.draw(this.drawnPolygon[i]);
             }
     
         }
         
-        requestAnimationFrame(obj.animate.bind(obj));
+        id = requestAnimationFrame(obj.animate.bind(obj));
+    },
+
+    clearAnimation() {
+        cancelAnimationFrame(id);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.cache.push(this.drawnPolygon);
+        this.drawnPolygon = [];
+        id = requestAnimationFrame(obj.animate.bind(obj));
     }
 
 }
@@ -156,5 +169,7 @@ canvas.addEventListener('mousedown', function(event) {polygonHandler.mouseDownHa
 canvas.addEventListener('mousemove', function(event) {polygonHandler.mouseMoveHandler(event) });
 canvas.addEventListener('contextmenu', function(event) {polygonHandler.ctxMenuHandler(event) });
 
-requestAnimationFrame(obj.animate.bind(obj));
+id = requestAnimationFrame(obj.animate.bind(obj));
+
+clearButton.addEventListener('click', obj.clearAnimation.bind(obj))
 
