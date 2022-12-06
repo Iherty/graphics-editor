@@ -13,7 +13,7 @@ function getMousePos(canvas, event) {
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'white', lineColor = 'black', lineWidth = 1, style = 'solid') {
+    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'black', lineWidth = 1, style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -42,6 +42,18 @@ class PolygonDrawer {
 
         if (isClosePath) ctx.closePath();
 
+        this.visualize(polygon);
+
+    }
+
+    #drawBorder(p) { // Проблема с отрисовкой фигур с заливкой
+        this.#clone = {...p};
+        this.#clone.isFill = false;
+        new PolygonDrawer().draw(this.#clone);
+    }
+
+    visualize(polygon) {
+
         if (!polygon.isFill) {
             ctx.lineWidth = polygon.lineWidth;
             ctx.strokeStyle = polygon.lineColor;
@@ -52,13 +64,6 @@ class PolygonDrawer {
 
             this.#drawBorder(polygon);
         }
-
-    }
-
-    #drawBorder(p) {
-        this.#clone = {...p};
-        this.#clone.isFill = false;
-        new PolygonDrawer().draw(this.#clone);
     }
 }
 
@@ -69,6 +74,7 @@ class PolygonHandlers {
     #polygon = new Polygon();
     #polCreatedCallbacks = [];
     #drawer = new PolygonDrawer();
+
 
     mouseDownHandler(event) {
         this.#startLinePos = getMousePos(canvas, event);
@@ -93,9 +99,7 @@ class PolygonHandlers {
             ctx.lineTo(this.#polygon.coordinates[0], this.#polygon.coordinates[1])
         }
 
-        ctx.lineWidth = this.#polygon.lineWidth;
-        ctx.strokeStyle = this.#polygon.color;
-        ctx.stroke();
+        this.#drawer.visualize(this.#polygon)
 
         if (this.#polygon.coordinates.length > 2) {
             this.#drawer.draw(this.#polygon, false);
@@ -112,7 +116,8 @@ class PolygonHandlers {
 
         console.log(this.#polCreatedCallbacks);
         this.#polCreatedCallbacks.forEach(item => item(this.#polygon));
-        this.#polygon = new Polygon();
+        this.#polygon = {...this.#polygon};
+        this.#polygon.coordinates = [];
     }
 
     addPolygonCreatedEventListener(callback) {
@@ -130,9 +135,9 @@ let obj = { // Черновой объект для тестированяи ф�
     },
 
     animate() {
-
+        
         if (this.drawnPolygon.length > 0) {
-    
+            
             for (let i = 0; i < this.drawnPolygon.length; i++) {
                 new PolygonDrawer().draw(this.drawnPolygon[i]);
             }
