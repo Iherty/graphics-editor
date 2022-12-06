@@ -18,7 +18,7 @@
 
         <div id="tools">
 
-            <fieldset>
+            <fieldset id="tools-fieldset-1">
                 <legend id="tools-group-name">Инструменты</legend>
                 <div id="buttonСontainer">
 
@@ -38,14 +38,47 @@
                 </div>
             </fieldset>
 
-            <fieldset id="tools-fieldset">
+            <fieldset id="tools-fieldset-2">
 
                 <legend id="tools-group-name">Свойства</legend>
                 <div id="properties">
-                    <p>Толщина линии</p>
-                    <p>Цвет линии</p>
-                    <p>Цвет заливки</p>
-                    <p>Тип линии</p>
+
+                    <div id="properties-name">
+                        <p>Толщина линии</p>
+                        <p>Цвет линии</p>
+                        <p>Тип линии</p>
+                        <p>Цвет заливки</p>
+                    </div>
+
+                    <div id="properties-form">
+                        <select id="properties-form-lineWidth">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                          </select>
+
+                          <select id="properties-form-lineColor">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                          </select>
+
+                          <select id="properties-form-lineType">
+                            <option value="1">dashed</option>
+                            <option value="2">dotted</option>
+                            <option value="3">solid</option>
+                          </select>
+
+                    </div>
+
                 </div>
 
             </fieldset>

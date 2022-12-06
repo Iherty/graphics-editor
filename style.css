@@ -33,7 +33,7 @@ fieldset {
     border: 1px solid grey;
 }
 
-#tools-fieldset {
+#tools-fieldset-2 {
     margin-top: 10px;
 }
 
@@ -52,7 +52,22 @@ button {
     margin: 5px;
 }
 
+#properties {
+    display: flex;
+    flex-direction: row;
+}
 
+#properties-form {
+    /* border: 1px solid black; */
+    padding-top: 0.8em;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+#properties-form-lineWidth, #properties-form-lineColor, #properties-form-lineType {
+    margin: 0.5em;
+}
 p {
     padding-left: 10px;
 }
