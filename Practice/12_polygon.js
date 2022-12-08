@@ -14,7 +14,7 @@ function getMousePos(canvas, event) {
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'black', lineWidth = 1, style = 'solid') {
+    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 1, style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -25,7 +25,6 @@ class Polygon {
 }
 
 class PolygonDrawer {
-    #clone;
 
     draw(polygon, isClosePath = true) { // [x1, y1, x2, y2]
         
@@ -43,18 +42,6 @@ class PolygonDrawer {
 
         if (isClosePath) ctx.closePath();
 
-        this.visualize(polygon);
-
-    }
-
-    #drawBorder(p) { // Проблема с отрисовкой фигур с заливкой
-        this.#clone = {...p};
-        this.#clone.isFill = false;
-        new PolygonDrawer().draw(this.#clone);
-    }
-
-    visualize(polygon) {
-
         if (!polygon.isFill) {
             ctx.lineWidth = polygon.lineWidth;
             ctx.strokeStyle = polygon.lineColor;
@@ -63,16 +50,39 @@ class PolygonDrawer {
             ctx.fillStyle = polygon.fillColor;
             ctx.fill();
 
-            this.#drawBorder(polygon);
+            this.#drawBorder(polygon, isClosePath);
         }
+
     }
+    
+    #drawBorder(polygon, isClosePath) { // Проблема с отрисовкой фигур с заливкой
+    
+        ctx.beginPath();
+
+        if (polygon.style !== 'solid') {
+            if (polygon.style === 'dashed') ctx.setLineDash([20, 5]);
+            if (polygon.style === 'dotted') ctx.setLineDash([5, 15]);
+        }
+
+        for (let i = 0; i < polygon.coordinates.length;) {
+            ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
+            i = i + 2;
+        }
+
+        if (isClosePath) ctx.closePath();
+
+        ctx.lineWidth = polygon.lineWidth;
+        ctx.strokeStyle = polygon.lineColor;
+        ctx.stroke();
+    }
+
 }
 
 class PolygonHandlers {
     #isClick = false;
     #startLinePos;
     #endLinePos;
-    #polygon = new Polygon();
+    #polygon = new Polygon([], true);
     #polCreatedCallbacks = [];
     #drawer = new PolygonDrawer();
 
@@ -93,17 +103,35 @@ class PolygonHandlers {
         this.#endLinePos = getMousePos(canvas, event);
 
         ctx.beginPath();
-        ctx.moveTo(this.#startLinePos[0], this.#startLinePos[1]);
-        ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
 
-        if (this.#polygon.coordinates.length > 2) {
-            ctx.lineTo(this.#polygon.coordinates[0], this.#polygon.coordinates[1])
+        if (this.#polygon.style !== 'solid') {
+            if (this.#polygon.style === 'dashed') ctx.setLineDash([20, 5]);
+            if (this.#polygon.style === 'dotted') ctx.setLineDash([5, 15]);
         }
 
-        this.#drawer.visualize(this.#polygon)
+        for (let i = 0; i < this.#polygon.coordinates.length;) {
+            ctx.lineTo(this.#polygon.coordinates[i], this.#polygon.coordinates[i + 1]);
+            i = i + 2;
+        }
 
-        if (this.#polygon.coordinates.length > 2) {
-            this.#drawer.draw(this.#polygon, false);
+        ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
+        ctx.closePath();
+        ctx.lineWidth = this.#polygon.lineWidth;
+        ctx.strokeStyle = this.#polygon.lineColor;
+        ctx.stroke();
+
+        if (this.#polygon.isFill) {
+            ctx.beginPath();
+
+            for (let i = 0; i < this.#polygon.coordinates.length;) {
+                ctx.lineTo(this.#polygon.coordinates[i], this.#polygon.coordinates[i + 1]);
+                i = i + 2;
+            }
+
+            ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
+            ctx.closePath();
+            ctx.fillStyle = this.#polygon.fillColor;
+            ctx.fill();
         }
 
 
@@ -117,7 +145,6 @@ class PolygonHandlers {
 
         console.log(this.#polCreatedCallbacks);
         this.#polCreatedCallbacks.forEach(item => item(this.#polygon));
-        this.#polygon = {...this.#polygon};
         this.#polygon.coordinates = [];
     }
 

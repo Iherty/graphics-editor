@@ -12,7 +12,7 @@ function getMousePos(canvas, event) {
 
 class Ellipse {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor, fillColor) {
+    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green') {
 
         this.coordinates = coordinates;
         this.isFill = isFill;
@@ -53,7 +53,7 @@ class EllipseDrawer {
 
     #drawBorder(x, y, radiusX, radiusY, width, color) {
         ctx.beginPath();
-        ctx.ellipse(x, y, radiusX, radiusY, 0, 2 * Math.PI);
+        ctx.ellipse(x, y, radiusX, radiusY, 0, 0, 2 * Math.PI);
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
         ctx.stroke();
@@ -64,7 +64,7 @@ class EllipseHandlers {
     #isClick = false;
     #startXY;
     #endXY;
-    #ellipse = new Ellipse();
+    #ellipse = new Ellipse([], true);
     #drawer = new EllipseDrawer();
     #ellipseCreatedCallbacks = []
 
@@ -96,8 +96,7 @@ class EllipseHandlers {
         this.#isClick = false;
         this.#endXY = getMousePos(canvas, event)
         this.#ellipse.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
-        
-        this.#ellipse = new Ellipse();
+        this.#ellipse.coordinates = [];
     }
 
     addCircleCreatedEventListener(callback) {

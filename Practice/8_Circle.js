@@ -12,7 +12,7 @@ function getMousePos(canvas, event) {
 
 class Circle {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'white') {
+    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -59,7 +59,7 @@ class CircleDraw {
 
 class CircleHandlers {
     #isMouseDown = false;
-    #circle = new Circle();
+    #circle = new Circle([], true);
     #drawer = new CircleDraw();
     #startXY;
     #endXY;
@@ -119,7 +119,7 @@ class CircleHandlers {
 
         console.log(this.#circle)
         this.#circleCreatedCallbacks.forEach(item => item(this.#circle));
-        this.#circle = new Circle();
+        this.#circle.coordinates = [];
 
     }
 
