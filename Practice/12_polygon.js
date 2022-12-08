@@ -14,7 +14,7 @@ function getMousePos(canvas, event) {
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 1, style = 'solid') {
+    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 3, style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -26,7 +26,7 @@ class Polygon {
 
 class PolygonDrawer {
 
-    draw(polygon, isClosePath = true) { // [x1, y1, x2, y2]
+    draw(polygon) { // [x1, y1, x2, y2]
         
         ctx.beginPath();
 
@@ -40,49 +40,37 @@ class PolygonDrawer {
             i = i + 2;
         }
 
-        if (isClosePath) ctx.closePath();
+        ctx.closePath();
+        ctx.lineWidth = polygon.lineWidth;
+        ctx.strokeStyle = polygon.lineColor;
+        ctx.stroke();
 
-        if (!polygon.isFill) {
-            ctx.lineWidth = polygon.lineWidth;
-            ctx.strokeStyle = polygon.lineColor;
-            ctx.stroke();
-        } else {
-            ctx.fillStyle = polygon.fillColor;
-            ctx.fill();
-
-            this.#drawBorder(polygon, isClosePath);
+        if (polygon.isFill) {
+            this.#fillPolygon(polygon);
         }
 
     }
     
-    #drawBorder(polygon, isClosePath) { // Проблема с отрисовкой фигур с заливкой
+    #fillPolygon(polygon) {
     
         ctx.beginPath();
-
-        if (polygon.style !== 'solid') {
-            if (polygon.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (polygon.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
 
         for (let i = 0; i < polygon.coordinates.length;) {
             ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
             i = i + 2;
         }
 
-        if (isClosePath) ctx.closePath();
-
-        ctx.lineWidth = polygon.lineWidth;
-        ctx.strokeStyle = polygon.lineColor;
-        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle = polygon.fillColor;
+        ctx.fill();
     }
-
 }
 
 class PolygonHandlers {
     #isClick = false;
     #startLinePos;
     #endLinePos;
-    #polygon = new Polygon([], true);
+    #polygon = new Polygon();
     #polCreatedCallbacks = [];
     #drawer = new PolygonDrawer();
 
@@ -102,36 +90,12 @@ class PolygonHandlers {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.#endLinePos = getMousePos(canvas, event);
 
-        ctx.beginPath();
+        if (this.#polygon.coordinates.length > 1) {
 
-        if (this.#polygon.style !== 'solid') {
-            if (this.#polygon.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (this.#polygon.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
+            this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
+            this.#drawer.draw(this.#polygon);
+            this.#polygon.coordinates.splice(this.#polygon.coordinates.length - 2, 2);
 
-        for (let i = 0; i < this.#polygon.coordinates.length;) {
-            ctx.lineTo(this.#polygon.coordinates[i], this.#polygon.coordinates[i + 1]);
-            i = i + 2;
-        }
-
-        ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
-        ctx.closePath();
-        ctx.lineWidth = this.#polygon.lineWidth;
-        ctx.strokeStyle = this.#polygon.lineColor;
-        ctx.stroke();
-
-        if (this.#polygon.isFill) {
-            ctx.beginPath();
-
-            for (let i = 0; i < this.#polygon.coordinates.length;) {
-                ctx.lineTo(this.#polygon.coordinates[i], this.#polygon.coordinates[i + 1]);
-                i = i + 2;
-            }
-
-            ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
-            ctx.closePath();
-            ctx.fillStyle = this.#polygon.fillColor;
-            ctx.fill();
         }
 
 
@@ -199,4 +163,6 @@ canvas.addEventListener('contextmenu', function(event) {polygonHandler.ctxMenuHa
 id = requestAnimationFrame(obj.animate.bind(obj));
 
 clearButton.addEventListener('click', obj.clearAnimation.bind(obj))
+
+
 
