@@ -14,12 +14,10 @@ class Polyline {
     static savesPolylines = [];
 
     constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
-        //super(arguments);
         this.coordinates = coordinates; 
         this.width = width;
         this.color = color;
         this.style = style;
-
     }
 
 }
@@ -60,8 +58,6 @@ class PolylineHandlers {
         if (event.button == 0) { // if clicked on the left mouse button
             this.#startLinePos = getMousePos(canvas, event);
             this.#isClick = true;
-
-            // Save coordinates to polyline object
             this.#polyline.coordinates.push(this.#startLinePos[0], this.#startLinePos[1]);
         }
     
@@ -73,25 +69,17 @@ class PolylineHandlers {
         if (!this.#isClick) {
             return
         }
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.#endLinePos = getMousePos(canvas, event);
-        
 
         // Draw polylines every time the mouse moves. This will help render the polyline.
         // But this will add extra line drawings. Which we remove by ctx.clearRect
-        ctx.beginPath();
-        ctx.moveTo(this.#startLinePos[0], this.#startLinePos[1]);
-        ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
-        ctx.lineWidth = this.#polyline.width;
-        ctx.strokeStyle = this.#polyline.color;
-        ctx.stroke();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.#endLinePos = getMousePos(canvas, event);
         
-        // ctx.clearRect will clear the entire canvas. 
-        // the code below will help to permanently animate the lines of the polyline
-        if (this.#polyline.coordinates.length > 2) {
-            this.#drawer.draw(this.#polyline);
-        }
+        // As the mouse moves, new finite line coordinates are added. Different pol probabilities are visualized. 
+        // As a result, the final coordinates remain, the unnecessary coordinates are removed by splice
+        this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
+        this.#drawer.draw(this.#polyline);
+        this.#polyline.coordinates.splice(this.#polyline.coordinates.length - 2, 2);
          
     }
 
@@ -100,25 +88,28 @@ class PolylineHandlers {
         this.#isClick = false;
         this.#endLinePos = getMousePos(canvas, event);
         this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
-
+        
+        
         console.log(this.#polCreatedCallbacks);
+        // At this stage, the final look of the figure is ready. 
+        // We can save it and send it on request to other functions and classes so that they can work with it. 
         this.#polCreatedCallbacks.forEach(item => item(this.#polyline));
         this.#polyline = new Polyline();
     }
 
     addPolylineCreatedEventListener(callback) {
-        this.#polCreatedCallbacks.push(callback)
+        this.#polCreatedCallbacks.push(callback);
     }
 
 }
 
 
-let obj = { // Черновой объект для тестированяи функциональности
+let obj = { // test obj
     drawnPolyline: [],
 
     getDrawnPolyline(polyline) {
         let clone = {...polyline}
-        obj.drawnPolygon.push(clone);
+        obj.drawnPolyline.push(clone);
         console.log(this.drawnPolyline);
     },
 
@@ -132,7 +123,7 @@ let obj = { // Черновой объект для тестированяи ф�
     
         }
 
-        requestAnimationFrame(obj.animation.bind(obj));
+        requestAnimationFrame(obj.animate.bind(obj));
     
     }
 
@@ -147,5 +138,5 @@ canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownH
 canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) });
 canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) });
 
-requestAnimationFrame(obj.animation.bind(obj));
+requestAnimationFrame(obj.animate.bind(obj));
 

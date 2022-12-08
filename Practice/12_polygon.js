@@ -14,7 +14,7 @@ function getMousePos(canvas, event) {
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 3, style = 'solid') {
+    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 1, style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -87,17 +87,16 @@ class PolygonHandlers {
             return
         }
 
+        // Draw polygons every time the mouse moves. This will help render the polygons.
+        // But this will add extra line drawings. Which we remove by ctx.clearRect
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.#endLinePos = getMousePos(canvas, event);
 
-        if (this.#polygon.coordinates.length > 1) {
-
-            this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
-            this.#drawer.draw(this.#polygon);
-            this.#polygon.coordinates.splice(this.#polygon.coordinates.length - 2, 2);
-
-        }
-
+        // As the mouse moves, new finite line coordinates are added. Different pol probabilities are visualized. 
+        // As a result, the final coordinates remain, the unnecessary coordinates are removed by splice
+        this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
+        this.#drawer.draw(this.#polygon);
+        this.#polygon.coordinates.splice(this.#polygon.coordinates.length - 2, 2);
 
     }
 
@@ -107,9 +106,13 @@ class PolygonHandlers {
         this.#endLinePos = getMousePos(canvas, event);
         this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
 
+        // At this stage, the final look of the figure is ready. 
+        // We can save it and send it on request to other functions and classes so that they can work with it. 
         console.log(this.#polCreatedCallbacks);
         this.#polCreatedCallbacks.forEach(item => item(this.#polygon));
         this.#polygon.coordinates = [];
+
+        
     }
 
     addPolygonCreatedEventListener(callback) {
@@ -119,7 +122,7 @@ class PolygonHandlers {
 
 let id;
 
-let obj = { // Черновой объект для тестированяи функциональности
+let obj = { // test object
     drawnPolygon: [],
     cache: [],
 

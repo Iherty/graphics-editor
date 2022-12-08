@@ -13,7 +13,6 @@ function getMousePos(canvas, event) {
 class Ellipse {
 
     constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green') {
-
         this.coordinates = coordinates;
         this.isFill = isFill;
         this.lineWidth = lineWidth;
@@ -46,16 +45,16 @@ class EllipseDrawer {
             ctx.fillStyle = ellipse.fillColor;
             ctx.fill();
 
-            this.#drawBorder(this.#avrX, this.#avrY, this.#radiusX, this.#radiusY, ellipse.lineWidth, ellipse.lineColor);
+            this.#drawBorder(this.#avrX, this.#avrY, this.#radiusX, this.#radiusY, ellipse);
         }
 
     }
 
-    #drawBorder(x, y, radiusX, radiusY, width, color) {
+    #drawBorder(x, y, radiusX, radiusY, ellipse) {
         ctx.beginPath();
         ctx.ellipse(x, y, radiusX, radiusY, 0, 0, 2 * Math.PI);
-        ctx.lineWidth = width;
-        ctx.strokeStyle = color;
+        ctx.lineWidth = ellipse.lineWidth
+        ctx.strokeStyle = ellipse.lineColor;
         ctx.stroke();
     }
  }

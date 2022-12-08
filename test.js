@@ -1,9 +1,6 @@
 'use strict'
-
-let canvas = document.getElementById('canvas'); 
+let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
-let polygonButton = document.getElementById('polygon');
-let clearButton = document.getElementById('clearCanvas');
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -12,157 +9,152 @@ function getMousePos(canvas, event) {
     return [x, y]
 }
 
-class Polygon {
+class Polyline {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'blue', lineWidth = 3, style = 'solid') {
-        this.coordinates = coordinates;
-        this.lineWidth = lineWidth;
-        this.lineColor = lineColor;
+    static savesPolylines = [];
+
+    constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
+        //super(arguments);
+        this.coordinates = coordinates; 
+        this.width = width;
+        this.color = color;
         this.style = style;
-        this.isFill = isFill;
-        this.fillColor = fillColor;
+
     }
+
 }
 
-class PolygonDrawer {
+class PolylineDrawer {
 
-    draw(polygon) { // [x1, y1, x2, y2]
-        
+    draw(polyline) {
+
         ctx.beginPath();
 
-        if (polygon.style !== 'solid') {
-            if (polygon.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (polygon.style === 'dotted') ctx.setLineDash([5, 15]);
+        if (polyline.style !== 'solid') {
+            if (polyline.style === 'dashed') ctx.setLineDash([20, 5]);
+            if (polyline.style === 'dotted') ctx.setLineDash([5, 15]);
         }
 
-        for (let i = 0; i < polygon.coordinates.length;) {
-            ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
+        for(let i = 0; i < polyline.coordinates.length;) {
+            ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
             i = i + 2;
         }
 
-        ctx.closePath();
-        ctx.lineWidth = polygon.lineWidth;
-        ctx.strokeStyle = polygon.lineColor;
+        ctx.lineWidth = polyline.width;
+        ctx.strokeStyle = polyline.color;
         ctx.stroke();
-
-        if (polygon.isFill) {
-            this.#fillPolygon(polygon);
-        }
-
-    }
-    
-    #fillPolygon(polygon) {
-    
-        ctx.beginPath();
-
-        for (let i = 0; i < polygon.coordinates.length;) {
-            ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
-            i = i + 2;
-        }
-
-        ctx.closePath();
-        ctx.fillStyle = polygon.fillColor;
-        ctx.fill();
+        
     }
 }
 
-class PolygonHandlers {
+class PolylineHandlers {
     #isClick = false;
     #startLinePos;
     #endLinePos;
-    #polygon = new Polygon([], true);
+    #polyline = new Polyline();
     #polCreatedCallbacks = [];
-    #drawer = new PolygonDrawer();
-
+    #drawer = new PolylineDrawer();
 
     mouseDownHandler(event) {
-        this.#startLinePos = getMousePos(canvas, event);
-        this.#isClick = true;
-        this.#polygon.coordinates.push(this.#startLinePos[0], this.#startLinePos[1]);
+    
+        if (event.button == 0) { // if clicked on the left mouse button
+            this.#startLinePos = getMousePos(canvas, event);
+            this.#isClick = true;
+
+            // Save coordinates to polyline object
+            this.#polyline.coordinates.push(this.#startLinePos[0], this.#startLinePos[1]);
+        }
+    
     }
 
+    
     mouseMoveHandler(event) {
 
         if (!this.#isClick) {
             return
         }
-
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.#endLinePos = getMousePos(canvas, event);
+        
 
-        if (this.#polygon.coordinates.length > 1) {
+        // Draw polylines every time the mouse moves. This will help render the polyline.
+        // But this will add extra line drawings. Which we remove by ctx.clearRect
 
-            this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
-            this.#drawer.draw(this.#polygon);
-            this.#polygon.coordinates.splice(this.#polygon.coordinates.length - 2, 2);
+        // if (this.#polyline.coordinates.length > 2) {
+        //     console.log(this.#polyline.coordinates)
+            this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
+            this.#drawer.draw(this.#polyline);
+            this.#polyline.coordinates.splice(this.#polyline.coordinates.length - 2, 2);        
+        //}
 
-        }
 
-
+        // ctx.beginPath();
+        // ctx.moveTo(this.#startLinePos[0], this.#startLinePos[1]);
+        // ctx.lineTo(this. #endLinePos[0], this. #endLinePos[1]);
+        // ctx.lineWidth = this.#polyline.width;
+        // ctx.strokeStyle = this.#polyline.color;
+        // ctx.stroke();
+        
+        // ctx.clearRect will clear the entire canvas. 
+        // the code below will help to permanently animate the lines of the polyline
+        // if (this.#polyline.coordinates.length > 2) {
+        //     this.#drawer.draw(this.#polyline);
+        // }
+         
     }
 
     ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
         this.#endLinePos = getMousePos(canvas, event);
-        this.#polygon.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
+        this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
 
         console.log(this.#polCreatedCallbacks);
-        this.#polCreatedCallbacks.forEach(item => item(this.#polygon));
-        this.#polygon.coordinates = [];
+        this.#polCreatedCallbacks.forEach(item => item(this.#polyline));
+        this.#polyline = new Polyline();
     }
 
-    addPolygonCreatedEventListener(callback) {
+    addPolylineCreatedEventListener(callback) {
         this.#polCreatedCallbacks.push(callback)
     }
+
 }
 
-let id;
 
 let obj = { // Черновой объект для тестированяи функциональности
-    drawnPolygon: [],
-    cache: [],
+    drawnPolyline: [],
 
-    getDrawnPolygon(polyline) {
+    getDrawnPolyline(polyline) {
         let clone = {...polyline}
-        this.drawnPolygon.push(clone);
-        console.log(this.drawnPolygon);
+        obj.drawnPolyline.push(clone);
+        console.log(this.drawnPolyline);
     },
 
     animate() {
-        
-        if (this.drawnPolygon.length > 0) {
-            let draw = new PolygonDrawer();
 
-            for (let i = 0; i < this.drawnPolygon.length; i++) {
-                draw.draw(this.drawnPolygon[i]);
+        if (this.drawnPolyline.length > 0) {
+    
+            for (let i = 0; i < this.drawnPolyline.length; i++) {
+                new PolylineDrawer().draw(this.drawnPolyline[i]);
             }
     
         }
-        
-        id = requestAnimationFrame(obj.animate.bind(obj));
-    },
 
-    clearAnimation() {
-        cancelAnimationFrame(id);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.cache.push(this.drawnPolygon);
-        this.drawnPolygon = [];
-        id = requestAnimationFrame(obj.animate.bind(obj));
+        requestAnimationFrame(obj.animate.bind(obj));
+    
     }
 
 }
 
-let polygonHandler = new PolygonHandlers();
-polygonHandler.addPolygonCreatedEventListener(obj.getDrawnPolygon.bind(obj));
 
-canvas.addEventListener('mousedown', function(event) {polygonHandler.mouseDownHandler(event) });
-canvas.addEventListener('mousemove', function(event) {polygonHandler.mouseMoveHandler(event) });
-canvas.addEventListener('contextmenu', function(event) {polygonHandler.ctxMenuHandler(event) });
-
-id = requestAnimationFrame(obj.animate.bind(obj));
-
-clearButton.addEventListener('click', obj.clearAnimation.bind(obj))
+let polylineHandler = new PolylineHandlers();
+polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
 
 
+canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) });
+canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) });
+canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) });
+
+requestAnimationFrame(obj.animate.bind(obj));
 
