@@ -26,6 +26,8 @@
     flex-direction: column;
     justify-content: flex-start;
     margin-left: 10px;
+    margin-top: -5px;
+    /* border: 1px solid black; */
 }
 
 
@@ -59,10 +61,10 @@ button {
 
 #properties-form {
     /* border: 1px solid black; */
-    padding-top: 0.5em;
-    padding-left: 15px;
     display: flex;
     flex-direction: column;
+    padding-top: 0.5em;
+    padding-left: 15px;
 }
 
 .properties-form-lineWidth, .properties-form-lineColor, .properties-form-lineType, .properties-form-fillColor {
