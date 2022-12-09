@@ -129,8 +129,6 @@ canvas.addEventListener('mousemove', function(event) {lineHandlers.mouseMoveHand
 
 requestAnimationFrame(testObj.animation.bind(testObj));
 
-
-// 
 class Properties {
     #lineWidth;
     #lineWidthUpdateCallbacks = [];
@@ -153,6 +151,6 @@ class Properties {
 }
 
 let prop = new Properties();
-prop.addLineWidthUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));
 
+prop.addLineWidthUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));
 lineWidth.addEventListener('change', function() {prop.lineWidthHandler()})
