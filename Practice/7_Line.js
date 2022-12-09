@@ -86,7 +86,7 @@ class LineHandlers {
 
         console.log(this.#lineCreatedCallbacks)
         this.#lineCreatedCallbacks.forEach(item => item(this.#line));
-        this.#line = new Line();
+        this.#line.coordinates = [];
     }
 
     addLineCreatedEventListener(callback) {

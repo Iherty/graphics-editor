@@ -30,8 +30,8 @@ class LineDrawer {
 
         if (line.style === 'solid') ctx.setLineDash([]);
         if (line.style === 'dashed') ctx.setLineDash([20, 7]);
-        if (line.style === 'dotted') ctx.setLineDash([3, 7]);
-        if (line.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
+        if (line.style === 'dotted') ctx.setLineDash([3, 8]);
+        if (line.style === 'dash-dotted') ctx.setLineDash([20, 5, 3, 5]);
 
         ctx.moveTo(line.coordinates[0], line.coordinates[1]);
         ctx.lineTo(line.coordinates[2], line.coordinates[3]);

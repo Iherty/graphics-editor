@@ -65,7 +65,7 @@ button {
     flex-direction: column;
 }
 
-.properties-form-lineWidth, #properties-form-lineColor, #properties-form-lineType {
+.properties-form-lineWidth, #properties-form-lineColor, .properties-form-lineType {
     margin: 0.5em;
 }
 p {

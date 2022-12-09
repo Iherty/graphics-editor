@@ -134,7 +134,7 @@ class Properties {
     #lineWidthUpdateCallbacks = [];
 
     lineWidthHandler() {
-        console.log(lineWidth.value)
+        console.log(typeof lineWidth.value)
 
         this.#lineWidth = lineWidth.value;
         this.#lineWidthUpdateCallbacks.forEach(item => item('width', +this.#lineWidth)); 
@@ -152,5 +152,5 @@ class Properties {
 
 let prop = new Properties();
 
-prop.addLineWidthUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));
+prop.addLinePropUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));
 lineWidth.addEventListener('change', function() {prop.lineWidthHandler()})
