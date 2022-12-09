@@ -48,25 +48,22 @@
                         <p>Цвет линии</p>
                         <p>Тип линии</p>
                         <p>Цвет заливки</p>
+                        <!-- Переписать с тегом <label></label> -->
                     </div>
 
                     <div id="properties-form">
 
-                          <input class="properties-form-lineWidth" type="number" name="lineWidthForm" value="1" min="1" max="10" step="1">
+                        <input class="properties-form-lineWidth" type="number" value="1" min="1" max="10" step="1">
+                        <input class="properties-form-lineColor" type="color">
 
-                          <select id="properties-form-lineColor">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                          </select>
-
-                          <select class="properties-form-lineType">
+                        <select class="properties-form-lineType">
                             <option>solid</option>
                             <option>dashed</option>
                             <option>dotted</option>
                             <option>dash-dotted</option>
-                            <!-- <option>dotted</option> -->
-                            
-                          </select>
+                        </select>
+
+                        <input class="properties-form-fillColor" type="color" value="#e66465">
 
                     </div>
 
@@ -76,6 +73,6 @@
         </div>
         
     </div>
-    <script src="test.js"></script>
+    <script src="Practice/15_lineColorChoose.js"></script>
 </body>
 </html>

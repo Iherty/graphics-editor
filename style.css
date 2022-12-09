@@ -59,15 +59,21 @@ button {
 
 #properties-form {
     /* border: 1px solid black; */
-    padding-top: 0.7em;
+    padding-top: 0.5em;
     padding-left: 15px;
     display: flex;
     flex-direction: column;
 }
 
-.properties-form-lineWidth, #properties-form-lineColor, .properties-form-lineType {
+.properties-form-lineWidth, .properties-form-lineColor, .properties-form-lineType, .properties-form-fillColor {
     margin: 0.5em;
 }
+
+.properties-form-lineColor, .properties-form-fillColor {
+    width: 95px;
+    height: 23px;
+}
+
 p {
     padding-left: 10px;
 }
