@@ -51,6 +51,7 @@ class LineHandlers {
     #lineCreatedCallbacks = [];
     #drawer = new LineDrawer();
 
+
     mouseDownHandler(event) { 
         this.#startXY = getMousePos(canvas, event);
         this.#isMouseDown = true;
@@ -130,14 +131,10 @@ canvas.addEventListener('mousemove', function(event) {lineHandlers.mouseMoveHand
 requestAnimationFrame(testObj.animation.bind(testObj));
 
 class Properties {
-    // #lineWidth;
-    // #lineStyle;
-    // #lineColor;
+    
     #linePropUpdateCallbacks = [];
 
     lineWidthHandler() {
-        // Название свойства, значение свойства
-        // Когда фигура получит, то сможет проверить, что изменилось? Какое свойство фигуры и присвоит ей это значение
         this.#linePropUpdateCallbacks.forEach(item => item('width', +lineWidth.value)); 
     }
 
@@ -151,10 +148,24 @@ class Properties {
 
     addLinePropUpdateEventListener(callback) {
         this.#linePropUpdateCallbacks.push(callback);
-        // Коллбеки фигур, которые подписались на обновление. Сохраняются в массиве. При изменении будут вызваны и получат свои значения
     }
 
 }
+
+// class FiguriesProperties {
+
+//     constructor (lineWidth, lineColor, lineStyle, fillStyle) {
+//         this.lineWidth = lineWidth;
+//         this.lineColor = lineColor;
+//         this.lineStyle = lineStyle;
+//         this.fillColor = fillStyle;
+//     }
+
+// }
+
+
+
+
 
 let prop = new Properties();
 

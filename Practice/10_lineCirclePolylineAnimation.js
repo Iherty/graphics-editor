@@ -53,6 +53,12 @@ class LineHandlers {
     #lineCreatedCallbacks = [];
     #drawer = new LineDrawer();
 
+    // constructor(canvas) {
+    //     this.#canvas = canvas;
+    //     this.#canvas.addEventListener()
+    // }
+
+
     mouseDownHandler(event) { 
         this.#startXY = getMousePos(canvas, event);
         this.#isMouseDown = true;
