@@ -26,10 +26,10 @@ class LineDrawer {
 
         ctx.beginPath();
 
-        if (line.style !== 'solid') {
-            if (line.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (line.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
+        if (line.style === 'solid') ctx.setLineDash([]);
+        if (line.style === 'dashed') ctx.setLineDash([20, 7]);
+        if (line.style === 'dotted') ctx.setLineDash([3, 7]);
+        if (line.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
 
         ctx.moveTo(line.coordinates[0], line.coordinates[1]);
         ctx.lineTo(line.coordinates[2], line.coordinates[3]);
@@ -46,14 +46,28 @@ class LineHandlers {
     #line = new Line();
     #lineCreatedCallbacks = [];
     #drawer = new LineDrawer();
+    #canvas;
 
-    mouseDownHandler(event) { 
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
+        this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
+        this.#canvas.onmouseup = this.#mouseUpHandler.bind(this);
+    }
+
+    remove() {
+        this.#canvas.onmousedown = null;
+        this.#canvas.onmousemove = null;
+        this.#canvas.onmouseup = null;
+    }
+
+    #mouseDownHandler(event) { 
         this.#startXY = getMousePos(canvas, event);
         this.#isMouseDown = true;
         this.#line.coordinates.push(this.#startXY[0], this.#startXY[1])
     }
 
-    mouseMoveHandler(event) {
+    #mouseMoveHandler(event) {
     
         if(!this.#isMouseDown) {
             return
@@ -69,17 +83,10 @@ class LineHandlers {
         }
 
         this.#drawer.draw(this.#line);
-
-        // ctx.beginPath();
-        // ctx.moveTo(this.#startXY[0], this.#startXY[1]);
-        // ctx.lineTo(this.#endXY[0], this.#endXY[1]);
-        // ctx.lineWidth = this.#line.width;
-        // ctx.strokeStyle = this.#line.color;
-        // ctx.stroke();
     
     }
 
-    mouseUpHandler(event) { 
+    #mouseUpHandler(event) { 
         this.#isMouseDown = false;
         this.#endXY = getMousePos(canvas, event);
         this.#line.coordinates.push(this.#endXY[0], this.#endXY[1]);
@@ -94,7 +101,7 @@ class LineHandlers {
     }
 }
 
-let lineHandlers = new LineHandlers();
+let lineHandlers = new LineHandlers(canvas);
 let testObj = {
     drawnLines: [],
 
@@ -122,9 +129,5 @@ let testObj = {
 }
 
 lineHandlers.addLineCreatedEventListener(testObj.getLine.bind(testObj));
-
-canvas.addEventListener('mousedown', function(event) {lineHandlers.mouseDownHandler(event)});
-canvas.addEventListener('mouseup', function(event) {lineHandlers.mouseUpHandler(event)})
-canvas.addEventListener('mousemove', function(event) {lineHandlers.mouseMoveHandler(event)});
 
 requestAnimationFrame(testObj.animation.bind(testObj));

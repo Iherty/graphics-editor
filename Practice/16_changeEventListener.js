@@ -56,22 +56,15 @@ class LineHandlers {
 
     constructor(canvas) {
         this.#canvas = canvas;
-        // this.#canvas.addEventListener('mousedown', this.#mouseDownHandler.bind(this));
-        // this.#canvas.addEventListener('mousemove', this.#mouseMoveHandler.bind(this));
-        // this.#canvas.addEventListener('mouseup', this.#mouseUpHandler.bind(this));
         this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
         this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
         this.#canvas.onmouseup = this.#mouseUpHandler.bind(this);
     }
 
     remove() {
-        // this.#canvas.removeEventListener('mousedown', this.prototype.#mouseDownHandler);
-        // this.#canvas.removeEventListener('mousemove', this.prototype.#mouseMoveHandler);
-        // this.#canvas.removeEventListener('mouseup', this.prototype.#mouseUpHandler);
         this.#canvas.onmousedown = null;
         this.#canvas.onmousemove = null;
         this.#canvas.onmouseup = null;
-
     }
 
     #mouseDownHandler(event) { 

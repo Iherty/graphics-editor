@@ -165,8 +165,6 @@ class Properties {
 
 
 
-
-
 let prop = new Properties();
 
 prop.addLinePropUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));

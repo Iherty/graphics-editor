@@ -67,11 +67,16 @@ button {
     padding-left: 15px;
 }
 
-.properties-form-lineWidth, .properties-form-lineColor, .properties-form-lineType, .properties-form-fillColor {
+.properties-form-lineWidth, .properties-form-lineColor, .properties-form-lineType, .properties-form-fillColor, .properties-form-isFill {
     margin: 0.5em;
 }
 
 .properties-form-lineColor, .properties-form-fillColor {
+    width: 95px;
+    height: 23px;
+}
+
+.properties-form-isFill {
     width: 95px;
     height: 23px;
 }

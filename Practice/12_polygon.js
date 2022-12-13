@@ -70,18 +70,32 @@ class PolygonHandlers {
     #isClick = false;
     #startLinePos;
     #endLinePos;
-    #polygon = new Polygon();
+    #polygon = new Polygon([], true);
     #polCreatedCallbacks = [];
     #drawer = new PolygonDrawer();
+    #canvas;
+
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
+        this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
+        this.#canvas.oncontextmenu = this.#ctxMenuHandler.bind(this);
+    }
+
+    remove() {
+        this.#canvas.onmousedown = null;
+        this.#canvas.onmousemove = null;
+        this.#canvas.oncontextmenu = null;
+    }
 
 
-    mouseDownHandler(event) {
+    #mouseDownHandler(event) {
         this.#startLinePos = getMousePos(canvas, event);
         this.#isClick = true;
         this.#polygon.coordinates.push(this.#startLinePos[0], this.#startLinePos[1]);
     }
 
-    mouseMoveHandler(event) {
+    #mouseMoveHandler(event) {
 
         if (!this.#isClick) {
             return
@@ -100,7 +114,7 @@ class PolygonHandlers {
 
     }
 
-    ctxMenuHandler(event) {
+    #ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
         this.#endLinePos = getMousePos(canvas, event);
@@ -156,12 +170,9 @@ let obj = { // test object
 
 }
 
-let polygonHandler = new PolygonHandlers();
+let polygonHandler = new PolygonHandlers(canvas);
 polygonHandler.addPolygonCreatedEventListener(obj.getDrawnPolygon.bind(obj));
 
-canvas.addEventListener('mousedown', function(event) {polygonHandler.mouseDownHandler(event) });
-canvas.addEventListener('mousemove', function(event) {polygonHandler.mouseMoveHandler(event) });
-canvas.addEventListener('contextmenu', function(event) {polygonHandler.ctxMenuHandler(event) });
 
 id = requestAnimationFrame(obj.animate.bind(obj));
 

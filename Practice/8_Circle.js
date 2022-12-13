@@ -2,6 +2,11 @@
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
+let lineWidth = document.querySelector('.properties-form-lineWidth');
+let lineStyle = document.querySelector('.properties-form-lineType');
+let lineColor = document.querySelector('.properties-form-lineColor');
+let fillColor = document.querySelector('.properties-form-fillColor');
+let isFillButton = document.querySelector('.properties-form-isFill');
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -12,11 +17,12 @@ function getMousePos(canvas, event) {
 
 class Circle {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green') {
+    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green', style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.fillColor = fillColor;
+        this.lineStyle = style;
         this.isFill = isFill;
     }
 }
@@ -29,11 +35,15 @@ class CircleDraw {
     draw(circle) { // [x1, y1, x2, y2]
 
         ctx.beginPath();
+
+        if (circle.lineStyle === 'solid') ctx.setLineDash([]);
+        if (circle.lineStyle === 'dashed') ctx.setLineDash([20, 7]);
+        if (circle.lineStyle === 'dotted') ctx.setLineDash([3, 7]);
+        if (circle.lineStyle === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
+
         this.#avrX = (Math.abs(circle.coordinates[0] - circle.coordinates[2]) / 2) + Math.min(circle.coordinates[0], circle.coordinates[2]);
         this.#avrY = (Math.abs(circle.coordinates[1] - circle.coordinates[3]) / 2) + Math.min(circle.coordinates[1], circle.coordinates[3]);
         this.#radius = Math.max(Math.abs(circle.coordinates[0] - circle.coordinates[2]), Math.abs(circle.coordinates[1] - circle.coordinates[3])) / 2;
-        // Баг, окружность двигается с изначальной позиции, передвигается. И радиус высчитывается неверно, чем больше круг.
-        // Расчет радиуса неверен при больших окружностях
 
         ctx.arc(this.#avrX, this.#avrY, this.#radius, 0, 2 * Math.PI);
         if (!circle.isFill) {
@@ -59,22 +69,33 @@ class CircleDraw {
 
 class CircleHandlers {
     #isMouseDown = false;
-    #circle = new Circle([], true);
+    #circle = new Circle();
     #drawer = new CircleDraw();
+    #circleCreatedCallbacks = [];
     #startXY;
     #endXY;
-    #avrX;
-    #avrY;
-    #radius;
-    #circleCreatedCallbacks = [];
+    #canvas;
 
-    mouseDownHandler(event) {
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
+        this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
+        this.#canvas.onmouseup = this.#mouseUpHandler.bind(this);
+    }
+
+    remove() {
+        this.#canvas.onmousedown = null;
+        this.#canvas.onmousemove = null;
+        this.#canvas.onmouseup = null;
+    }
+
+    #mouseDownHandler(event) {
         this.#startXY = getMousePos(canvas, event);
         this.#circle.coordinates.push(this.#startXY[0], this.#startXY[1])
         this.#isMouseDown = true;
     }
 
-    mouseMoveHandler(event) {
+    #mouseMoveHandler(event) {
 
         if (!this.#isMouseDown) {
             return
@@ -90,29 +111,9 @@ class CircleHandlers {
         }
 
         this.#drawer.draw(this.#circle);
-
-        // this.#avrX = (Math.abs(this.#startXY[0] - this.#endXY[0]) / 2) + Math.min(this.#startXY[0], this.#endXY[0]);
-        // this.#avrY = (Math.abs(this.#startXY[1] - this.#endXY[1]) / 2) + Math.min(this.#startXY[1], this.#endXY[1]);
-        // this.#radius = Math.max( Math.abs(this.#startXY[0] - this.#endXY[0]), Math.abs(this.#startXY[1] - this.#endXY[1]) ) / 2;
-
-        // //this.#circle.isFill = true;
-
-        // ctx.beginPath();
-        // ctx.arc(this.#avrX, this.#avrY, this.#radius, 0, 2 * Math.PI);
-        // if (!this.#circle.isFill) {
-        //     ctx.lineWidth = this.#circle.width;
-        //     ctx.strokeStyle = this.#circle.lineColor;
-        //     ctx.stroke();
-        // } else {
-        //     ctx.fillStyle = this.#circle.fillColor;
-        //     ctx.fill();
-
-        //     new CircleDraw().drawBorder(this.#avrX, this.#avrY, this.#radius, this.#circle.lineWidth, this.#circle.lineColor);
-        // }
-
     }
 
-    mouseUpHandler(event) {
+    #mouseUpHandler(event) {
         this.#isMouseDown = false;
         this.#endXY = getMousePos(canvas, event)
         this.#circle.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
@@ -126,9 +127,21 @@ class CircleHandlers {
     addCircleCreatedEventListener(callback) {
         this.#circleCreatedCallbacks.push(callback);
     }
+
+    getUpdateCircleProperties(property, value, isFill) {
+        console.log(value)
+        this.#circle[property] = value;
+
+        if (isFill === undefined) {
+            this.#circle.isFill === true ? this.#circle.isFill = true : this.#circle.isFill = false;
+        } else {
+            this.#circle.isFill = isFill;
+        }
+
+    }
 }
 
-let circleHandlers = new CircleHandlers();
+let circleHandlers = new CircleHandlers(canvas);
 let testObj = {
     drawnCircles: [],
 
@@ -155,28 +168,39 @@ let testObj = {
     }
 }
 
-circleHandlers.addCircleCreatedEventListener(testObj.getCircle.bind(testObj))
+class Properties {
+    
+    #FiguresPropUpdateCallbacks = [];
 
-canvas.addEventListener('mousedown', function(event) { 
-    circleHandlers.mouseDownHandler(event);
-});
-canvas.addEventListener('mousemove', function(event) {
-    circleHandlers.mouseMoveHandler(event);
-});
-canvas.addEventListener('mouseup', function(event) {
-    circleHandlers.mouseUpHandler(event)
-});
+    lineWidthHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineWidth', +lineWidth.value)); 
+    }
 
+    lineStyleHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineStyle', lineStyle.value)); 
+    }
+
+    lineColorHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', lineColor.value)); 
+    }
+
+    fillColorHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', fillColor.value, true)); 
+    }
+
+    addLinePropUpdateEventListener(callback) {
+        this.#FiguresPropUpdateCallbacks.push(callback);
+    }
+
+}
+
+circleHandlers.addCircleCreatedEventListener(testObj.getCircle.bind(testObj));
 requestAnimationFrame(testObj.animation.bind(testObj));
 
-function circleDownHandler(event) {
-    circleHandlers.mouseDownHandler(event);
-}
+let prop = new Properties();
 
-function circleMoveHandler(event) {
-    circleHandlers.mouseMoveHandler(event);
-}
-
-function circleUpHandler(event) {
-    circleHandlers.mouseUpHandler(event)
-}
+prop.addLinePropUpdateEventListener(circleHandlers.getUpdateCircleProperties.bind(circleHandlers));
+lineWidth.addEventListener('change', function() {prop.lineWidthHandler()});
+lineStyle.addEventListener('change', function() {prop.lineStyleHandler()});
+lineColor.addEventListener('change', function() {prop.lineColorHandler()});
+fillColor.addEventListener('change', function() {prop.fillColorHandler()});

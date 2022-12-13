@@ -52,8 +52,22 @@ class PolylineHandlers {
     #polyline = new Polyline();
     #polCreatedCallbacks = [];
     #drawer = new PolylineDrawer();
+    #canvas;
 
-    mouseDownHandler(event) {
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
+        this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
+        this.#canvas.oncontextmenu = this.#ctxMenuHandler.bind(this);
+    }
+
+    remove() {
+        this.#canvas.onmousedown = null;
+        this.#canvas.onmousemove = null;
+        this.#canvas.oncontextmenu = null;
+    }
+
+    #mouseDownHandler(event) {
     
         if (event.button == 0) { // if clicked on the left mouse button
             this.#startLinePos = getMousePos(canvas, event);
@@ -64,7 +78,7 @@ class PolylineHandlers {
     }
 
     
-    mouseMoveHandler(event) {
+    #mouseMoveHandler(event) {
 
         if (!this.#isClick) {
             return
@@ -83,7 +97,7 @@ class PolylineHandlers {
          
     }
 
-    ctxMenuHandler(event) {
+    #ctxMenuHandler(event) {
         event.preventDefault(); 
         this.#isClick = false;
         this.#endLinePos = getMousePos(canvas, event);
@@ -130,13 +144,8 @@ let obj = { // test obj
 }
 
 
-let polylineHandler = new PolylineHandlers();
+let polylineHandler = new PolylineHandlers(canvas);
 polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
-
-
-canvas.addEventListener('mousedown', function(event) {polylineHandler.mouseDownHandler(event) });
-canvas.addEventListener('mousemove', function(event) {polylineHandler.mouseMoveHandler(event) });
-canvas.addEventListener('contextmenu', function(event) {polylineHandler.ctxMenuHandler(event) });
 
 requestAnimationFrame(obj.animate.bind(obj));
 

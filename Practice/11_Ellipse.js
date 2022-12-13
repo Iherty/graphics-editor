@@ -63,17 +63,31 @@ class EllipseHandlers {
     #isClick = false;
     #startXY;
     #endXY;
-    #ellipse = new Ellipse([], true);
+    #ellipse = new Ellipse();
     #drawer = new EllipseDrawer();
-    #ellipseCreatedCallbacks = []
+    #ellipseCreatedCallbacks = [];
+    #canvas;
 
-    mouseDownHandler(event) {
+    constructor(canvas) {
+        this.#canvas = canvas;
+        this.#canvas.onmousedown = this.#mouseDownHandler.bind(this);
+        this.#canvas.onmousemove = this.#mouseMoveHandler.bind(this);
+        this.#canvas.onmouseup = this.#mouseUpHandler.bind(this);
+    }
+
+    remove() {
+        this.#canvas.onmousedown = null;
+        this.#canvas.onmousemove = null;
+        this.#canvas.onmouseup = null;
+    }
+
+    #mouseDownHandler(event) {
         this.#startXY = getMousePos(canvas, event);
         this.#ellipse.coordinates.push(this.#startXY[0], this.#startXY[1]);
         this.#isClick = true;
     }
 
-    mouseMoveHandler(event) {
+    #mouseMoveHandler(event) {
         if (!this.#isClick) {
             return
         }
@@ -91,7 +105,7 @@ class EllipseHandlers {
         this.#drawer.draw(this.#ellipse);
     }
 
-    mouseUpHandler(event) {
+    #mouseUpHandler(event) {
         this.#isClick = false;
         this.#endXY = getMousePos(canvas, event)
         this.#ellipse.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
@@ -104,8 +118,5 @@ class EllipseHandlers {
 
 }
 
-let ellipseHandler = new EllipseHandlers();
+let ellipseHandler = new EllipseHandlers(canvas);
 
-canvas.addEventListener('mousedown', function(e) {ellipseHandler.mouseDownHandler(e)});
-canvas.addEventListener('mousemove', function(e) {ellipseHandler.mouseMoveHandler(e)});
-canvas.addEventListener('mouseup', function(e) {ellipseHandler.mouseUpHandler(e)});
