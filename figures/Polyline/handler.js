@@ -1,47 +1,6 @@
-'use strict'
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
-
-function getMousePos(canvas, event) { 
-    let rect = canvas.getBoundingClientRect(); 
-    let x = event.clientX - rect.left;
-    let y = event.clientY - rect.top;
-    return [x, y]
-}
-
-class Polyline {
-
-    constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
-        this.coordinates = coordinates; 
-        this.width = width;
-        this.color = color;
-        this.style = style;
-    }
-
-}
-
-class PolylineDrawer {
-
-    draw(polyline) {
-
-        ctx.beginPath();
-
-        if (polyline.style !== 'solid') {
-            if (polyline.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (polyline.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
-
-        for(let i = 0; i < polyline.coordinates.length;) {
-            ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
-            i = i + 2;
-        }
-
-        ctx.lineWidth = polyline.width;
-        ctx.strokeStyle = polyline.color;
-        ctx.stroke();
-        
-    }
-}
+import { getMousePos, canvas, ctx } from '../../editor.js';
+import { Polyline } from './polyline.js';
+import { PolylineDrawer } from './drawer.js'
 
 class PolylineHandlers {
     #isClick = false;
@@ -101,8 +60,6 @@ class PolylineHandlers {
         this.#endLinePos = getMousePos(canvas, event);
         this.#polyline.coordinates.push(this.#endLinePos[0], this.#endLinePos[1]);
         
-        
-        console.log(this.#polCreatedCallbacks);
         // At this stage, the final look of the figure is ready. 
         // We can save it and send it on request to other functions and classes so that they can work with it. 
         this.#polCreatedCallbacks.forEach(item => item(this.#polyline));
@@ -115,35 +72,4 @@ class PolylineHandlers {
 
 }
 
-
-let obj = { // test obj
-    drawnPolyline: [],
-
-    getDrawnPolyline(polyline) {
-        let clone = {...polyline}
-        obj.drawnPolyline.push(clone);
-        console.log(this.drawnPolyline);
-    },
-
-    animate() {
-
-        if (this.drawnPolyline.length > 0) {
-    
-            for (let i = 0; i < this.drawnPolyline.length; i++) {
-                new PolylineDrawer().draw(this.drawnPolyline[i]);
-            }
-    
-        }
-
-        requestAnimationFrame(obj.animate.bind(obj));
-    
-    }
-
-}
-
-
-let polylineHandler = new PolylineHandlers(canvas);
-polylineHandler.addPolylineCreatedEventListener(obj.getDrawnPolyline.bind(obj))
-
-requestAnimationFrame(obj.animate.bind(obj));
-
+export { PolylineHandlers }
