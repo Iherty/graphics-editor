@@ -1,7 +1,7 @@
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = 'green', lineColor = 'black', lineWidth = 1, style = 'solid') {
+    constructor(coordinates = [], isFill = false, fillColor = '#e66465', lineColor = 'black', lineWidth = 1, style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;

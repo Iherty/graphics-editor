@@ -21,6 +21,11 @@ let circleButton = document.getElementById('circle');
 let polylineButton = document.getElementById('polyline');
 let ellipseButton = document.getElementById('ellipse');
 let polygonButton = document.getElementById('polygon');
+let lineWidth = document.querySelector('.properties-form-lineWidth');
+let lineStyle = document.querySelector('.properties-form-lineType');
+let lineColor = document.querySelector('.properties-form-lineColor');
+let fillColor = document.querySelector('.properties-form-fillColor');
+let isFillButton = document.querySelector('.properties-form-isFill');
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -29,7 +34,7 @@ function getMousePos(canvas, event) {
     return [x, y]
 }
 
-let figuresStoreAnimation = {
+let testObj = {
     drawnFigures: [],
 
     getFigure(figure) {
@@ -68,13 +73,13 @@ let figuresStoreAnimation = {
             }
         }
 
-        requestAnimationFrame(figuresStoreAnimation.animation.bind(figuresStoreAnimation));
+        requestAnimationFrame(testObj.animation.bind(testObj));
     }
 }
 
 // Figures
-let line = new LineHandlers(canvas);
-line.addLineCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
+let curruntHander = new LineHandlers(canvas);
+curruntHander.addLineCreatedEventListener(testObj.getFigure.bind(testObj));
 
 circleButton.addEventListener('click', remove);
 lineButton.addEventListener('click', remove);
@@ -85,32 +90,32 @@ polygonButton.addEventListener('click', remove);
 function remove() {
     
     switch(this) {
-        case circleButton: let circle = new CircleHandlers(canvas);
-        circle.addCircleCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
+        case circleButton: curruntHander = new CircleHandlers(canvas);
+        curruntHander.addCircleCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case lineButton: line = new LineHandlers(canvas); 
-        line.addLineCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
+        case lineButton: curruntHander = new LineHandlers(canvas); 
+        curruntHander.addLineCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case polylineButton: let polyline = new PolylineHandlers(canvas);
-        polyline.addPolylineCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
+        case polylineButton: curruntHander = new PolylineHandlers(canvas);
+        curruntHander.addPolylineCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case ellipseButton: let ellipse = new EllipseHandlers(canvas);
-        ellipse.addEllipseCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
+        case ellipseButton: curruntHander = new EllipseHandlers(canvas);
+        curruntHander.addEllipseCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case polygonButton: let polygon = new PolygonHandlers(canvas);
-        polygon.addPolygonCreatedEventListener(figuresStoreAnimation.getFigure.bind(figuresStoreAnimation));
-
+        case polygonButton: curruntHander = new PolygonHandlers(canvas);
+        curruntHander.addPolygonCreatedEventListener(testObj.getFigure.bind(testObj));
     }
+
 }
 
 
-requestAnimationFrame(figuresStoreAnimation.animation.bind(figuresStoreAnimation));
+requestAnimationFrame(testObj.animation.bind(testObj));
 
 
 
 
-export {getMousePos, canvas, ctx, line}
+export {getMousePos, canvas, ctx }

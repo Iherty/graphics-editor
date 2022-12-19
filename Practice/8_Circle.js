@@ -17,7 +17,7 @@ function getMousePos(canvas, event) {
 
 class Circle {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = 'green', style = 'solid') {
+    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = '#e66465', style = 'solid') {
         this.coordinates = coordinates;
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
@@ -118,7 +118,6 @@ class CircleHandlers {
         this.#endXY = getMousePos(canvas, event)
         this.#circle.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
 
-        console.log(this.#circle)
         this.#circleCreatedCallbacks.forEach(item => item(this.#circle));
         this.#circle.coordinates = [];
 
@@ -129,14 +128,11 @@ class CircleHandlers {
     }
 
     getUpdateCircleProperties(property, value, isFill) {
-        console.log(value)
         this.#circle[property] = value;
 
-        if (isFill === undefined) {
-            this.#circle.isFill === true ? this.#circle.isFill = true : this.#circle.isFill = false;
-        } else {
+        if (isFill !== undefined) {
             this.#circle.isFill = isFill;
-        }
+        } 
 
     }
 }
@@ -150,7 +146,6 @@ let testObj = {
 
         if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) { 
             this.drawnCircles.push(clone);
-            console.log(this.drawnCircles)
         }
         
     },
@@ -184,8 +179,25 @@ class Properties {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', lineColor.value)); 
     }
 
-    fillColorHandler() {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', fillColor.value, true)); 
+    fillColorHandler(event) {
+
+        if (event.type === 'click') {
+
+            if (isFillButton.checked) {
+
+                this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465", true)); 
+
+            } else {
+                
+                this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465", false)); 
+            }
+
+        } else {
+
+            this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', fillColor.value, true));
+            isFillButton.checked = true;
+        }
+    
     }
 
     addLinePropUpdateEventListener(callback) {
@@ -203,4 +215,5 @@ prop.addLinePropUpdateEventListener(circleHandlers.getUpdateCircleProperties.bin
 lineWidth.addEventListener('change', function() {prop.lineWidthHandler()});
 lineStyle.addEventListener('change', function() {prop.lineStyleHandler()});
 lineColor.addEventListener('change', function() {prop.lineColorHandler()});
-fillColor.addEventListener('change', function() {prop.fillColorHandler()});
+fillColor.addEventListener('change', function(e) {prop.fillColorHandler(e)});
+isFillButton.addEventListener('click', function(e) {prop.fillColorHandler(e)})
