@@ -31,7 +31,8 @@ export default class PropertiesHandler {
 
             } else {
 
-                this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', null)); 
+                this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', null));
+                this.#storeFiguresLastProp['fillColor'] = null;
             }
 
         } else {

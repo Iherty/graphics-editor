@@ -27,6 +27,12 @@ let lineStyleButton = document.querySelector('.properties-form-lineType');
 let lineColorButton = document.querySelector('.properties-form-lineColor');
 let fillColorButton = document.querySelector('.properties-form-fillColor');
 let isFillButton = document.querySelector('.properties-form-isFill');
+let clearButton = document.getElementById('clearCanvas');
+let circleDrawer = new CircleDraw();
+let lineDrawer = new LineDrawer();
+let polylineDrawer = new PolylineDrawer();
+let ellipseDrawer = new EllipseDrawer();
+let polygonDrawer = new PolygonDrawer();
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -37,6 +43,7 @@ function getMousePos(canvas, event) {
 
 let testObj = {
     drawnFigures: [],
+    cache: [],
 
     getFigure(figure) {
 
@@ -50,13 +57,8 @@ let testObj = {
     },
 
     animation() {
-
+        
         if (this.drawnFigures.length > 0) {
-            let circleDrawer = new CircleDraw();
-            let lineDrawer = new LineDrawer();
-            let polylineDrawer = new PolylineDrawer();
-            let ellipseDrawer = new EllipseDrawer();
-            let polygonDrawer = new PolygonDrawer();
 
             for (let i = 0; i < this.drawnFigures.length; i++) {
 
@@ -75,21 +77,25 @@ let testObj = {
         }
 
         requestAnimationFrame(testObj.animation.bind(testObj));
+    },
+
+    clearAnimation() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.cache.push(this.drawnPolygon);
+        this.drawnFigures = [];
+
     }
 }
 
-// Figures
+// Run figure handler
 let curruntHandler = new LineHandlers(canvas);
 curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
 
+
+// Add propertiesHandler EventListener
 let currentProperties = new PropertiesHandler();
 currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler))
-
-circleButton.addEventListener('click', remove);
-lineButton.addEventListener('click', remove);
-polylineButton.addEventListener('click', remove);
-ellipseButton.addEventListener('click', remove);
-polygonButton.addEventListener('click', remove);
 
 lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler()});
 lineStyleButton.addEventListener('change', function() {currentProperties.lineStyleHandler()});
@@ -97,6 +103,13 @@ lineColorButton.addEventListener('change', function() {currentProperties.lineCol
 fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e)});
 isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e)})
 
+
+// Switch figure
+circleButton.addEventListener('click', remove);
+lineButton.addEventListener('click', remove);
+polylineButton.addEventListener('click', remove);
+ellipseButton.addEventListener('click', remove);
+polygonButton.addEventListener('click', remove);
 
 function remove() {
     
@@ -125,8 +138,10 @@ function remove() {
     currentProperties.updatePropToCurrent();
 }
 
-requestAnimationFrame(testObj.animation.bind(testObj));
 
+// Animation and ClearAnimation func
+requestAnimationFrame(testObj.animation.bind(testObj));
+clearButton.addEventListener('click', testObj.clearAnimation.bind(testObj))
 
 
 
