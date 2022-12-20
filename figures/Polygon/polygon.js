@@ -1,12 +1,11 @@
 
 class Polygon {
 
-    constructor(coordinates = [], isFill = false, fillColor = '#e66465', lineColor = 'black', lineWidth = 1, style = 'solid') {
+    constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid', fillColor = null) {
         this.coordinates = coordinates;
-        this.lineWidth = lineWidth;
+        this.width = width;
         this.lineColor = lineColor;
         this.style = style;
-        this.isFill = isFill;
         this.fillColor = fillColor;
     }
 }

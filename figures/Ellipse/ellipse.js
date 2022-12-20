@@ -1,11 +1,11 @@
 
 class Ellipse {
 
-    constructor(coordinates = [], isFill = false, lineWidth = 1, lineColor = 'black', fillColor = '#e66465') {
+    constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid', fillColor = null) {
         this.coordinates = coordinates;
-        this.isFill = isFill;
-        this.lineWidth = lineWidth;
+        this.width = width;
         this.lineColor = lineColor;
+        this.style = style;
         this.fillColor = fillColor;
     }
 }

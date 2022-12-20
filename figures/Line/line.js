@@ -1,10 +1,10 @@
 
 class Line {
 
-    constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
+    constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid') {
         this.coordinates = coordinates;
         this.width = width;
-        this.color = color;
+        this.lineColor = lineColor;
         this.style = style;
     }
 }

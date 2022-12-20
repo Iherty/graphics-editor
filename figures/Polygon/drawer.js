@@ -6,10 +6,10 @@ class PolygonDrawer {
         
         ctx.beginPath();
 
-        if (polygon.style !== 'solid') {
-            if (polygon.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (polygon.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
+        if (polygon.style === 'solid') ctx.setLineDash([]);
+        if (polygon.style === 'dashed') ctx.setLineDash([20, 7]);
+        if (polygon.style === 'dotted') ctx.setLineDash([3, 7]);
+        if (polygon.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
 
         for (let i = 0; i < polygon.coordinates.length;) {
             ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
@@ -17,11 +17,11 @@ class PolygonDrawer {
         }
 
         ctx.closePath();
-        ctx.lineWidth = polygon.lineWidth;
+        ctx.lineWidth = polygon.width;
         ctx.strokeStyle = polygon.lineColor;
         ctx.stroke();
 
-        if (polygon.isFill) {
+        if (polygon.fillColor) {
             this.#fillPolygon(polygon);
         }
 

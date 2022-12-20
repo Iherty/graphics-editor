@@ -13,6 +13,7 @@ import { EllipseHandlers } from './figures/Ellipse/handler.js';
 import { PolygonHandlers } from './figures/Polygon/handler.js';
 import { Polygon } from './figures/Polygon/polygon.js';
 import { PolygonDrawer } from './figures/Polygon/drawer.js';
+import PropertiesHandler from './common/Properties.js';
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
@@ -21,10 +22,10 @@ let circleButton = document.getElementById('circle');
 let polylineButton = document.getElementById('polyline');
 let ellipseButton = document.getElementById('ellipse');
 let polygonButton = document.getElementById('polygon');
-let lineWidth = document.querySelector('.properties-form-lineWidth');
-let lineStyle = document.querySelector('.properties-form-lineType');
-let lineColor = document.querySelector('.properties-form-lineColor');
-let fillColor = document.querySelector('.properties-form-fillColor');
+let lineWidthButton = document.querySelector('.properties-form-lineWidth');
+let lineStyleButton = document.querySelector('.properties-form-lineType');
+let lineColorButton = document.querySelector('.properties-form-lineColor');
+let fillColorButton = document.querySelector('.properties-form-fillColor');
 let isFillButton = document.querySelector('.properties-form-isFill');
 
 function getMousePos(canvas, event) { 
@@ -78,8 +79,11 @@ let testObj = {
 }
 
 // Figures
-let curruntHander = new LineHandlers(canvas);
-curruntHander.addLineCreatedEventListener(testObj.getFigure.bind(testObj));
+let curruntHandler = new LineHandlers(canvas);
+curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+
+let currentProperties = new PropertiesHandler();
+currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler))
 
 circleButton.addEventListener('click', remove);
 lineButton.addEventListener('click', remove);
@@ -87,35 +91,48 @@ polylineButton.addEventListener('click', remove);
 ellipseButton.addEventListener('click', remove);
 polygonButton.addEventListener('click', remove);
 
+lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler()});
+lineStyleButton.addEventListener('change', function() {currentProperties.lineStyleHandler()});
+lineColorButton.addEventListener('change', function() {currentProperties.lineColorHandler()});
+fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e)});
+isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e)})
+
+let line;
+let circle;
+let ellipse;
+let polygon;
+let polyline;
+
 function remove() {
     
     switch(this) {
-        case circleButton: curruntHander = new CircleHandlers(canvas);
-        curruntHander.addCircleCreatedEventListener(testObj.getFigure.bind(testObj));
+        case circleButton: curruntHandler = new CircleHandlers(canvas);
+        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case lineButton: curruntHander = new LineHandlers(canvas); 
-        curruntHander.addLineCreatedEventListener(testObj.getFigure.bind(testObj));
+        case lineButton: curruntHandler = new LineHandlers(canvas); 
+        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case polylineButton: curruntHander = new PolylineHandlers(canvas);
-        curruntHander.addPolylineCreatedEventListener(testObj.getFigure.bind(testObj));
+        case polylineButton: curruntHandler = new PolylineHandlers(canvas);
+        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case ellipseButton: curruntHander = new EllipseHandlers(canvas);
-        curruntHander.addEllipseCreatedEventListener(testObj.getFigure.bind(testObj));
+        case ellipseButton: curruntHandler = new EllipseHandlers(canvas);
+        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
         break;
 
-        case polygonButton: curruntHander = new PolygonHandlers(canvas);
-        curruntHander.addPolygonCreatedEventListener(testObj.getFigure.bind(testObj));
+        case polygonButton: curruntHandler = new PolygonHandlers(canvas);
+        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
     }
-
+    
+    currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler));
+    currentProperties.updatePropToCurrent();
 }
-
 
 requestAnimationFrame(testObj.animation.bind(testObj));
 
 
 
 
-export {getMousePos, canvas, ctx }
+export {getMousePos, canvas, ctx, lineWidthButton, lineStyleButton, lineColorButton, fillColorButton, isFillButton }

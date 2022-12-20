@@ -168,11 +168,11 @@ class Properties {
     #FiguresPropUpdateCallbacks = [];
 
     lineWidthHandler() {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineWidth', +lineWidth.value)); 
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('width', +lineWidth.value)); 
     }
 
     lineStyleHandler() {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineStyle', lineStyle.value)); 
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('style', lineStyle.value)); 
     }
 
     lineColorHandler() {
@@ -188,7 +188,7 @@ class Properties {
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465", true)); 
 
             } else {
-                
+
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465", false)); 
             }
 

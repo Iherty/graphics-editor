@@ -14,7 +14,7 @@ class LineDrawer {
         ctx.moveTo(line.coordinates[0], line.coordinates[1]);
         ctx.lineTo(line.coordinates[2], line.coordinates[3]);
         ctx.lineWidth = line.width;
-        ctx.strokeStyle = line.color;
+        ctx.strokeStyle = line.lineColor;
         ctx.stroke();
 
     }

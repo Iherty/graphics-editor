@@ -6,10 +6,10 @@ class PolylineDrawer {
 
         ctx.beginPath();
 
-        if (polyline.style !== 'solid') {
-            if (polyline.style === 'dashed') ctx.setLineDash([20, 5]);
-            if (polyline.style === 'dotted') ctx.setLineDash([5, 15]);
-        }
+        if (polygon.style === 'solid') ctx.setLineDash([]);
+        if (polygon.style === 'dashed') ctx.setLineDash([20, 7]);
+        if (polygon.style === 'dotted') ctx.setLineDash([3, 7]);
+        if (polygon.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
 
         for(let i = 0; i < polyline.coordinates.length;) {
             ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
@@ -17,7 +17,7 @@ class PolylineDrawer {
         }
 
         ctx.lineWidth = polyline.width;
-        ctx.strokeStyle = polyline.color;
+        ctx.strokeStyle = polyline.lineColor;
         ctx.stroke();
         
     }
