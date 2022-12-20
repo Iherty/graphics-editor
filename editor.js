@@ -97,11 +97,6 @@ lineColorButton.addEventListener('change', function() {currentProperties.lineCol
 fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e)});
 isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e)})
 
-let line;
-let circle;
-let ellipse;
-let polygon;
-let polyline;
 
 function remove() {
     
