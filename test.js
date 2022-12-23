@@ -11,7 +11,7 @@ let selectedShapeIndex;
 
 let line = new Line([563.3500003814697, 129, 559.3500003814697, 357, 559.3500003814697, 357]);
 let circle = new Circle([603.3500003814697, 435, 554.3500003814697, 347]);
-let lineWidth = 1;
+let lineWidth = 2;
 
 let shapes = [];
 shapes.push(line);
@@ -65,10 +65,17 @@ ctx.lineWidth = lineWidth;
 ctx.strokeStyle = 'black';
 ctx.stroke();
 
-canvas.addEventListener('mousedown', function(event) {
+canvas.addEventListener('mousemove', function(event) {
     startxy = getMousePos(canvas, event);
     let isDragging = isMouseInShape(startxy[0], startxy[1], line);
-    console.log(isDragging)
+    
+    if (isDragging) {
+        canvas.style.cursor = 'pointer';
+        // console.log('true');
+    } else {
+        canvas.style.cursor = 'default'
+    }
+
 })
 
 function defineIrregularPath(shape){
