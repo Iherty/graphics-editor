@@ -1,4 +1,4 @@
-import { ctx } from '../../editor.js'
+import { ctx } from '../editor.js'
 
 class LineDrawer {
 

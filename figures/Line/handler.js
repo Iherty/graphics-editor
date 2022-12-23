@@ -14,6 +14,7 @@ export class LineHandlers extends HandlerBase{
 
     _mouseDownHandler(event) { 
         this.#startXY = getMousePos(canvas, event);
+        console.log(this.#startXY)
         this.#isMouseDown = true;
         this._figure.coordinates.push(this.#startXY[0], this.#startXY[1])
     }

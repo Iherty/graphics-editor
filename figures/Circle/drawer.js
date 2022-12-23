@@ -1,4 +1,4 @@
-import { ctx  } from '../../editor.js';
+import { ctx  } from '../editor.js';
 
 class CircleDraw {
     #avrX;
@@ -17,6 +17,9 @@ class CircleDraw {
         this.#avrX = (Math.abs(circle.coordinates[0] - circle.coordinates[2]) / 2) + Math.min(circle.coordinates[0], circle.coordinates[2]);
         this.#avrY = (Math.abs(circle.coordinates[1] - circle.coordinates[3]) / 2) + Math.min(circle.coordinates[1], circle.coordinates[3]);
         this.#radius = Math.max(Math.abs(circle.coordinates[0] - circle.coordinates[2]), Math.abs(circle.coordinates[1] - circle.coordinates[3])) / 2;
+        circle.radius = this.#radius;
+        circle.avrX = this.#avrX;
+        circle.avrY = this.#avrY;
 
         ctx.arc(this.#avrX, this.#avrY, this.#radius, 0, 2 * Math.PI);
         if (!circle.fillColor) {

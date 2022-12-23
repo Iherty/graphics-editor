@@ -1,9 +1,55 @@
-'use strict'
+
+import { Line } from './figures/Line/line.js';
+import { Circle } from './figures/Circle/circle.js';
 
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
-let lineWidth = document.querySelector('.properties-form-lineWidth');
-let lineStyle = document.querySelector('.properties-form-lineType');
+let startxy;
+let isDragging = false;
+let selectedShapeIndex;
+
+
+let line = new Line([563.3500003814697, 129, 559.3500003814697, 357, 559.3500003814697, 357]);
+let circle = new Circle([603.3500003814697, 435, 554.3500003814697, 347]);
+let lineWidth = 1;
+
+let shapes = [];
+shapes.push(line);
+shapes.push(circle);
+
+function isMouseInShape(mx, my, shape) { // mouseX, mouseY
+    
+    if (shape instanceof Line) { // x1. y1, x2, y2
+        let coordinates = shape.coordinates;
+
+        let dx1 = coordinates[2] - coordinates[0];
+        let dy1 = coordinates[3] - coordinates[1];
+
+        let dx = mx - coordinates[0];
+        let dy = my - coordinates[1];
+
+        let S = dx1 * dy - dx * dy1;
+        let ab = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+        let h = S / ab;
+
+        if (Math.abs(h) < lineWidth / 2) {
+            return true;
+        }
+
+
+    } else if (shape instanceof Circle) {
+        let dx = mx - shape.avrX;
+        let dy = my - shape.avrY;
+
+        if(dx*dx+dy*dy<shape.radius*shape.radius){
+            // yes, mouse is inside this circle
+            return(true);
+        }
+    }
+
+    return false;
+
+}
 
 function getMousePos(canvas, event) { 
     let rect = canvas.getBoundingClientRect(); 
@@ -12,149 +58,34 @@ function getMousePos(canvas, event) {
     return [x, y]
 }
 
-class Line {
+ctx.beginPath();
+ctx.lineTo(line.coordinates[0], line.coordinates[1]);
+ctx.lineTo(line.coordinates[2], line.coordinates[3]);
+ctx.lineWidth = lineWidth;
+ctx.strokeStyle = 'black';
+ctx.stroke();
 
-    constructor(coordinates = [], width = 1, color = 'black', style = 'solid') {
-        this.coordinates = coordinates;
-        this.width = width;
-        this.color = color;
-        this.style = style;
-    }
+canvas.addEventListener('mousedown', function(event) {
+    startxy = getMousePos(canvas, event);
+    let isDragging = isMouseInShape(startxy[0], startxy[1], line);
+    console.log(isDragging)
+})
+
+function defineIrregularPath(shape){
+    let coordinates = shape.coordinates;
+    ctx.beginPath();
+    ctx.moveTo(coordinates[0], coordinates[1]);
+    ctx.lineTo(coordinates[2], coordinates[3]);
 }
 
-class LineDrawer {
+// defineIrregularPath(shape);
 
-    draw(line) {
+        // if(ctx.isPointInStroke(mx,my)){
+        //     console.log('f');
+        //     return(true);
+        // }  
 
-        ctx.beginPath();
 
-        if (line.style === 'solid') ctx.setLineDash([]);
-        if (line.style === 'dashed') ctx.setLineDash([20, 7]);
-        if (line.style === 'dotted') ctx.setLineDash([3, 7]);
-        if (line.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
 
-        ctx.moveTo(line.coordinates[0], line.coordinates[1]);
-        ctx.lineTo(line.coordinates[2], line.coordinates[3]);
-        ctx.lineWidth = line.width;
-        ctx.strokeStyle = line.color;
-        ctx.stroke();
-    }
-}
 
-class LineHandlers {
-    #startXY;
-    #endXY;
-    #isMouseDown = false;
-    #line = new Line();
-    #lineCreatedCallbacks = [];
-    #drawer = new LineDrawer();
 
-    mouseDownHandler(event) { 
-        this.#startXY = getMousePos(canvas, event);
-        this.#isMouseDown = true;
-        this.#line.coordinates.push(this.#startXY[0], this.#startXY[1])
-    }
-
-    mouseMoveHandler(event) {
-    
-        if(!this.#isMouseDown) {
-            return
-        }
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.#endXY = getMousePos(canvas, event);
-        
-        if (this.#line.coordinates.length === 2) {
-            this.#line.coordinates.push(this.#endXY[0], this.#endXY[1]);
-        } else {
-            this.#line.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1])
-        }
-
-        this.#drawer.draw(this.#line);
-    
-    }
-
-    mouseUpHandler(event) { 
-        this.#isMouseDown = false;
-        this.#endXY = getMousePos(canvas, event);
-        this.#line.coordinates.push(this.#endXY[0], this.#endXY[1]);
-
-        console.log(this.#lineCreatedCallbacks)
-        this.#lineCreatedCallbacks.forEach(item => item(this.#line));
-        this.#line.coordinates = [];
-    }
-
-    addLineCreatedEventListener(callback) {
-        this.#lineCreatedCallbacks.push(callback);
-    }
-
-    getUpdateLineProperties(properties, value) {
-        this.#line[properties] = value; // Чтобы не потерять здесь this - добавлен bind при вызове
-        console.log(this.#line[properties]);
-    }
-}
-
-let lineHandlers = new LineHandlers();
-let testObj = {
-    drawnLines: [],
-
-    getLine(line) {
-        let clone = {...line};
-
-        if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) {
-            this.drawnLines.push(clone);
-            console.log(this.drawnLines)
-        }
-    
-    },
-
-    animation() {
-
-        if (this.drawnLines.length > 0) {
-            
-            for (let i = 0; i < this.drawnLines.length; i++) {
-                new LineDrawer().draw(this.drawnLines[i]);
-            }
-        }
-
-        requestAnimationFrame(testObj.animation.bind(testObj));
-    }
-}
-
-lineHandlers.addLineCreatedEventListener(testObj.getLine.bind(testObj));
-canvas.addEventListener('mousedown', function(event) {lineHandlers.mouseDownHandler(event)});
-canvas.addEventListener('mouseup', function(event) {lineHandlers.mouseUpHandler(event)})
-canvas.addEventListener('mousemove', function(event) {lineHandlers.mouseMoveHandler(event)});
-requestAnimationFrame(testObj.animation.bind(testObj));
-
-class Properties {
-    #lineWidth;
-    #lineStyle;
-    #linePropUpdateCallbacks = [];
-    #lineStyleUpdateCallbacks = [];
-
-    lineWidthHandler() {
-        // Название свойства, значение свойства
-        // Когда фигура получит, то сможет проверить, что изменилось? Какое свойство фигуры и присвоит ей это значение
-        this.#lineWidth = lineWidth.value;
-        this.#linePropUpdateCallbacks.forEach(item => item('width', +this.#lineWidth)); 
-    }
-
-    lineStyleHandler() {
-        console.log(typeof lineStyle.value);
-        this.#lineStyle = lineStyle.value;
-        this.#linePropUpdateCallbacks.forEach(item => item('style', this.#lineStyle)); 
-    }
-
-    addLinePropUpdateEventListener(callback) {
-        this.#linePropUpdateCallbacks.push(callback);
-        // Коллбеки фигур, которые подписались на обновление. Сохраняются в массиве. При изменении будут вызваны и получат свои значения
-    }
-
-}
-
-let prop = new Properties();
-
-prop.addLinePropUpdateEventListener(lineHandlers.getUpdateLineProperties.bind(lineHandlers));
-lineWidth.addEventListener('change', function() {prop.lineWidthHandler()});
-lineStyle.addEventListener('change', function() {prop.lineStyleHandler()});

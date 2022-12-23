@@ -49,7 +49,8 @@ let testObj = {
 
         let clone = {...figure};
         clone.__proto__ = figure.__proto__;
-
+        console.log(clone)
+        
         if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) { 
             this.drawnFigures.push(clone);
         }
@@ -111,31 +112,44 @@ polylineButton.addEventListener('click', remove);
 ellipseButton.addEventListener('click', remove);
 polygonButton.addEventListener('click', remove);
 
+let currentButton = lineButton;
+
 function remove() {
-    
+
     switch(this) {
         case circleButton: curruntHandler = new CircleHandlers(canvas);
         curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+        currentButton.style.backgroundColor = null;
+        currentButton = circleButton;
         break;
 
         case lineButton: curruntHandler = new LineHandlers(canvas); 
         curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+        currentButton.style.backgroundColor = null;
+        currentButton = lineButton;
         break;
 
         case polylineButton: curruntHandler = new PolylineHandlers(canvas);
         curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+        currentButton.style.backgroundColor = null;
+        currentButton = polylineButton;
         break;
 
         case ellipseButton: curruntHandler = new EllipseHandlers(canvas);
         curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+        currentButton.style.backgroundColor = null;
+        currentButton = ellipseButton;
         break;
 
         case polygonButton: curruntHandler = new PolygonHandlers(canvas);
         curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+        currentButton.style.backgroundColor = null;
+        currentButton = polygonButton;
     }
     
     currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler));
     currentProperties.updatePropToCurrent();
+    currentButton.style.backgroundColor = 'greenyellow';
 }
 
 

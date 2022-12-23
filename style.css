@@ -54,6 +54,12 @@ button {
     margin: 5px;
 }
 
+
+button:focus{
+    background:greenyellow;
+}
+
+
 #properties {
     display: flex;
     flex-direction: row;
