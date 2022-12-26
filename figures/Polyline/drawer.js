@@ -1,26 +1,29 @@
-import { ctx } from '../../editor.js'
 
-class PolylineDrawer {
+export default class PolylineDrawer {
 
-    draw(polyline) {
+    constructor(ctx) {
+        this.ctx = ctx;
+    }
 
-        ctx.beginPath();
+    draw(polyline, isFinishPath = false) {
 
-        if (polygon.style === 'solid') ctx.setLineDash([]);
-        if (polygon.style === 'dashed') ctx.setLineDash([20, 7]);
-        if (polygon.style === 'dotted') ctx.setLineDash([3, 7]);
-        if (polygon.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
+        this.ctx.beginPath();
+
+        if (polygon.style === 'solid') this.ctx.setLineDash([]);
+        if (polygon.style === 'dashed') this.ctx.setLineDash([20, 7]);
+        if (polygon.style === 'dotted') this.ctx.setLineDash([3, 7]);
+        if (polygon.style === 'dash-dotted') this.ctx.setLineDash([20, 7, 3, 7]);
 
         for(let i = 0; i < polyline.coordinates.length;) {
-            ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
+            this.ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);
             i = i + 2;
         }
 
-        ctx.lineWidth = polyline.width;
-        ctx.strokeStyle = polyline.lineColor;
-        ctx.stroke();
+        if (!isFinishPath) {
+            this.ctx.lineWidth = polyline.width;
+            this.ctx.strokeStyle = polyline.lineColor;
+            this.ctx.stroke();
+        }
         
     }
 }
-
-export { PolylineDrawer }

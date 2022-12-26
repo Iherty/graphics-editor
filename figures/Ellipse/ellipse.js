@@ -1,5 +1,5 @@
 
-class Ellipse {
+export default class Ellipse {
 
     constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid', fillColor = null) {
         this.coordinates = coordinates;
@@ -9,5 +9,3 @@ class Ellipse {
         this.fillColor = fillColor;
     }
 }
-
-export {Ellipse}

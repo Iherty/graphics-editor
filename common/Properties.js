@@ -1,26 +1,25 @@
-import { lineWidthButton, lineStyleButton, lineColorButton, fillColorButton, isFillButton } from '../editor.js'
 
 export default class PropertiesHandler {
     
     #FiguresPropUpdateCallbacks = [];
     #storeFiguresLastProp = {};
 
-    lineWidthHandler() {
+    lineWidthHandler(lineWidthButton) {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('width', +lineWidthButton.value)); 
         this.#storeFiguresLastProp['width'] = +lineWidthButton.value;
     }
 
-    lineStyleHandler() {
+    lineStyleHandler(lineStyleButton) {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('style', lineStyleButton.value));
         this.#storeFiguresLastProp['style'] = lineStyleButton.value;
     }
 
-    lineColorHandler() {
+    lineColorHandler(lineColorButton) {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', lineColorButton.value));
         this.#storeFiguresLastProp['lineColor'] = lineColorButton.value;
     }
 
-    fillColorHandler(event) {
+    fillColorHandler(event, isFillButton, fillColorButton) {
 
         if (event.type === 'click') {
 

@@ -1,5 +1,5 @@
 
-class Polyline {
+export default class Polyline {
 
     constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid') {
         this.coordinates = coordinates; 
@@ -9,5 +9,3 @@ class Polyline {
     }
 
 }
-
-export { Polyline }

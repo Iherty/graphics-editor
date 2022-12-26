@@ -55,10 +55,6 @@ button {
 }
 
 
-button:focus{
-    background:greenyellow;
-}
-
 
 #properties {
     display: flex;

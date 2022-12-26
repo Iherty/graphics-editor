@@ -1,5 +1,5 @@
 
-class Polygon {
+export default class Polygon {
 
     constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid', fillColor = null) {
         this.coordinates = coordinates;
@@ -9,5 +9,3 @@ class Polygon {
         this.fillColor = fillColor;
     }
 }
-
-export {Polygon}

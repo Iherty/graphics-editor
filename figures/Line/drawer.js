@@ -1,23 +1,25 @@
-import { ctx } from '../editor.js'
 
-class LineDrawer {
+export default class LineDrawer {
+
+    constructor(ctx) {
+        this.ctx = ctx;
+    }
 
     draw(line) {
 
-        ctx.beginPath();
+        this.ctx.beginPath();
 
-        if (line.style === 'solid') ctx.setLineDash([]);
-        if (line.style === 'dashed') ctx.setLineDash([20, 7]);
-        if (line.style === 'dotted') ctx.setLineDash([3, 7]);
-        if (line.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
+        if (line.style === 'solid') this.ctx.setLineDash([]);
+        if (line.style === 'dashed') this.ctx.setLineDash([20, 7]);
+        if (line.style === 'dotted') this.ctx.setLineDash([3, 7]);
+        if (line.style === 'dash-dotted') this.ctx.setLineDash([20, 7, 3, 7]);
 
-        ctx.moveTo(line.coordinates[0], line.coordinates[1]);
-        ctx.lineTo(line.coordinates[2], line.coordinates[3]);
-        ctx.lineWidth = line.width;
-        ctx.strokeStyle = line.lineColor;
-        ctx.stroke();
+        this.ctx.moveTo(line.coordinates[0], line.coordinates[1]);
+        this.ctx.lineTo(line.coordinates[2], line.coordinates[3]);
+        this.ctx.lineWidth = line.width;
+        this.ctx.strokeStyle = line.lineColor;
+        this.ctx.stroke();
 
     }
 }
 
-export { LineDrawer }

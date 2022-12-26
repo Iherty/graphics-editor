@@ -1,5 +1,5 @@
 
-class Line {
+export default class Line {
 
     constructor(coordinates = [], width = 1, lineColor = 'black', style = 'solid') {
         this.coordinates = coordinates;
@@ -8,5 +8,3 @@ class Line {
         this.style = style;
     }
 }
-
-export {Line}

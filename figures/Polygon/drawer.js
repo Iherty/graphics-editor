@@ -1,45 +1,49 @@
-import { ctx } from '../../editor.js'
 
-class PolygonDrawer {
+export default class PolygonDrawer {
 
-    draw(polygon) { // [x1, y1, x2, y2]
+    constructor(ctx) {
+        this.ctx = ctx;
+    }
+
+    draw(polygon, isFinishPath = false) { // [x1, y1, x2, y2]
         
-        ctx.beginPath();
+        this.ctx.beginPath();
 
-        if (polygon.style === 'solid') ctx.setLineDash([]);
-        if (polygon.style === 'dashed') ctx.setLineDash([20, 7]);
-        if (polygon.style === 'dotted') ctx.setLineDash([3, 7]);
-        if (polygon.style === 'dash-dotted') ctx.setLineDash([20, 7, 3, 7]);
+        if (polygon.style === 'solid') this.ctx.setLineDash([]);
+        if (polygon.style === 'dashed') this.ctx.setLineDash([20, 7]);
+        if (polygon.style === 'dotted') this.ctx.setLineDash([3, 7]);
+        if (polygon.style === 'dash-dotted') this.ctx.setLineDash([20, 7, 3, 7]);
 
         for (let i = 0; i < polygon.coordinates.length;) {
-            ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
+            this.ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
             i = i + 2;
         }
 
-        ctx.closePath();
-        ctx.lineWidth = polygon.width;
-        ctx.strokeStyle = polygon.lineColor;
-        ctx.stroke();
+        this.ctx.closePath();
 
-        if (polygon.fillColor) {
-            this.#fillPolygon(polygon);
+        if (!isFinishPath) {
+            this.ctx.lineWidth = polygon.width;
+            this.ctx.strokeStyle = polygon.lineColor;
+            this.ctx.stroke();
+
+            if (polygon.fillColor) {
+                this.#fillPolygon(polygon);
+            }
         }
 
     }
     
     #fillPolygon(polygon) {
     
-        ctx.beginPath();
+        this.ctx.beginPath();
 
         for (let i = 0; i < polygon.coordinates.length;) {
-            ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
+            this.ctx.lineTo(polygon.coordinates[i], polygon.coordinates[i + 1]);
             i = i + 2;
         }
 
-        ctx.closePath();
-        ctx.fillStyle = polygon.fillColor;
-        ctx.fill();
+        this.ctx.closePath();
+        this.ctx.fillStyle = polygon.fillColor;
+        this.ctx.fill();
     }
 }
-
-export { PolygonDrawer }
