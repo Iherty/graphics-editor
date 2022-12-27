@@ -1,31 +1,33 @@
 
-import Line from './figures/Line/line.js';
-import Circle from './figures/Circle/circle.js';
-import LineDrawer from './figures/Line/drawer.js';
-import CircleDrawer from './figures/Circle/drawer.js';
-import Ellipse from './figures/Ellipse/ellipse.js';
-import EllipseDrawer from './figures/Ellipse/drawer.js';
-import Polygon from './figures/Polygon/polygon.js';
-import PolygonDrawer from './figures/Polygon/drawer.js';
-import Polyline from './figures/Polyline/polyline.js';
-import PolylineDrawer from './figures/Polyline/drawer.js';
+import Line from '../figures/Line/line.js';
+import Circle from '../figures/Circle/circle.js';
+import LineDrawer from '../figures/Line/drawer.js';
+import CircleDrawer from '../figures/Circle/drawer.js';
+import Ellipse from '../figures/Ellipse/ellipse.js';
+import EllipseDrawer from '../figures/Ellipse/drawer.js';
+import Polygon from '../figures/Polygon/polygon.js';
+import PolygonDrawer from '../figures/Polygon/drawer.js';
+import Polyline from '../figures/Polyline/polyline.js';
+import PolylineDrawer from '../figures/Polyline/drawer.js';
 
 
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
-let line = new Line([563.3500003814697, 129, 559.3500003814697, 310, 559.3500003814697, 310]);
-let circle = new Circle([603.3500003814697, 435, 554.3500003814697, 347]);
-let ellipse = new Ellipse([200, 56, 96, 70])
+let lineWidthButton = document.querySelector('.properties-form-lineWidth');
+let lineStyleButton = document.querySelector('.properties-form-lineType');
+let lineColorButton = document.querySelector('.properties-form-lineColor');
+let fillColorButton = document.querySelector('.properties-form-fillColor');
+let isFillButton = document.querySelector('.properties-form-isFill');
+let line = new Line([563.3500003814697, 129, 559.3500003814697, 310, 559.3500003814697, 310], 5, '#0000FF');
+let circle = new Circle([603.3500003814697, 435, 554.3500003814697, 347], 1, '#FFFF00');
+let ellipse = new Ellipse([200, 56, 96, 70], 1, '#000000', 'solid', '#0000FF')
 let polyline = new Polyline([100, 350, 20, 380, 15, 150]);
-let polygon = new Polygon([280, 300, 310, 300, 320, 210])
+let polygon = new Polygon([280, 300, 310, 300, 320, 210], 2, '#000000', 'dashed')
 let circleDrawer = new CircleDrawer(ctx);
 let lineDrawer = new LineDrawer(ctx);
 let polylineDrawer = new PolylineDrawer(ctx);
 let ellipseDrawer = new EllipseDrawer(ctx);
 let polygonDrawer = new PolygonDrawer(ctx);
-
-
-let lineWidth = 2;
 
 
 let shapes = [];
@@ -37,6 +39,7 @@ shapes.push(ellipse, polygon)
 let startxy;
 let isDragging = false;
 let selectedShapeIndex;
+let inShape;
 
 drawAll(shapes)
 
@@ -54,7 +57,7 @@ function isMouseInShape(mx, my, shape) { // mouseX, mouseY
         let ab = Math.sqrt(dx1 * dx1 + dy1 * dy1);
         let h = S / ab;
 
-        if (Math.abs(h) < lineWidth / 2) {
+        if (Math.abs(h) < line.width / 2) {
             return true;
         }
 
@@ -121,19 +124,50 @@ function drawAll(shapes) {
 
 canvas.addEventListener('mousemove', function(event) {
     startxy = getMousePos(canvas, event);
-    let overLine = isMouseInShape(startxy[0], startxy[1], line);
-    let overCircle = isMouseInShape(startxy[0], startxy[1], circle);
-    let overEllipse = isMouseInShape(startxy[0], startxy[1], ellipse);
-    let overPolyl = isMouseInShape(startxy[0], startxy[1], polyline);
-    let overPolyg = isMouseInShape(startxy[0], startxy[1], polygon);
 
-    if (overLine || overCircle || overEllipse || overPolyl || overPolyg) {
+    for (let i = 0; i < shapes.length; i++) {
+        inShape = isMouseInShape(startxy[0], startxy[1], shapes[i]);
+        
+        if (inShape) {
+            selectedShapeIndex = shapes[i];
+            break;
+        }
+    }
+
+
+    if (inShape) {
         canvas.style.cursor = 'pointer';
+        
     } else {
         canvas.style.cursor = 'default'
     }
 
 })
+
+canvas.addEventListener('mousedown', function() {
+   
+    if (selectedShapeIndex) {
+        console.log(selectedShapeIndex, selectedShapeIndex.lineColor)
+
+        lineWidthButton.value = selectedShapeIndex.width;
+        lineColorButton.value = selectedShapeIndex.lineColor;
+        lineStyleButton.value = selectedShapeIndex.style;
+
+        if (selectedShapeIndex.fillColor) {
+            fillColorButton.value = selectedShapeIndex.fillColor;
+            isFillButton.checked = true;
+        } else {
+            isFillButton.checked = false;
+            fillColorButton.value = "#e66465";
+        }
+
+
+    } else {
+        console.log(';')
+    }
+})
+
+
 
 
 
