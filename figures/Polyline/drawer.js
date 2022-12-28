@@ -1,9 +1,6 @@
+import DrawerBase from '../DrawerBase.js';
 
-export default class PolylineDrawer {
-
-    constructor(ctx) {
-        this.ctx = ctx;
-    }
+export default class PolylineDrawer extends DrawerBase {
 
     draw(polyline, isFinishPath = false) {
 

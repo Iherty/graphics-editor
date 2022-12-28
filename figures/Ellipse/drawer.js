@@ -1,13 +1,10 @@
+import DrawerBase from '../DrawerBase.js';
 
-export default class EllipseDrawer {
+export default class EllipseDrawer extends DrawerBase {
     #avrX;
     #avrY;
     #radiusX;
     #radiusY;
-
-    constructor(ctx) {
-        this.ctx = ctx;
-    }
 
     draw(ellipse, isFinishPath = false) { // [x1, y1, x2, y2]
         

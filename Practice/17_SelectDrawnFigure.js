@@ -107,7 +107,7 @@ function getMousePos(canvas, event) {
 function drawAll(shapes) {
 
     for (let i = 0; i < shapes.length; i++) {
-        
+    
         if (shapes[i] instanceof Line) {
             lineDrawer.draw(shapes[i])
         } else if (shapes[i] instanceof Circle) {
@@ -163,7 +163,9 @@ canvas.addEventListener('mousedown', function() {
 
 
     } else {
+
         console.log(';')
+        
     }
 })
 

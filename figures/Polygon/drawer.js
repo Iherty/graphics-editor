@@ -1,9 +1,6 @@
+import DrawerBase from '../DrawerBase.js';
 
-export default class PolygonDrawer {
-
-    constructor(ctx) {
-        this.ctx = ctx;
-    }
+export default class PolygonDrawer extends DrawerBase {
 
     draw(polygon, isFinishPath = false) { // [x1, y1, x2, y2]
         

@@ -1,9 +1,6 @@
+import DrawerBase from '../DrawerBase.js';
 
-export default class LineDrawer {
-
-    constructor(ctx) {
-        this.ctx = ctx;
-    }
+export default class LineDrawer extends DrawerBase {
 
     draw(line) {
 

@@ -14,9 +14,11 @@ import PolygonHandlers from './figures/Polygon/handler.js';
 import Polygon from './figures/Polygon/polygon.js';
 import PolygonDrawer from './figures/Polygon/drawer.js';
 import PropertiesHandler from './common/Properties.js';
+import PointerHandler from './common/Pointer.js';
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
+
 let lineButton = document.getElementById('line');
 let circleButton = document.getElementById('circle');
 let polylineButton = document.getElementById('polyline');
@@ -28,11 +30,13 @@ let lineColorButton = document.querySelector('.properties-form-lineColor');
 let fillColorButton = document.querySelector('.properties-form-fillColor');
 let isFillButton = document.querySelector('.properties-form-isFill');
 let clearButton = document.getElementById('clearCanvas');
+
 let circleDrawer = new CircleDrawer(ctx);
 let lineDrawer = new LineDrawer(ctx);
 let polylineDrawer = new PolylineDrawer(ctx);
 let ellipseDrawer = new EllipseDrawer(ctx);
 let polygonDrawer = new PolygonDrawer(ctx);
+let pointer = new PointerHandler(canvas, ctx);
 
 
 let testObj = {
@@ -106,7 +110,7 @@ let currentButton = lineButton;
 curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
 
 
-// Add callback and EventListener for pushing new properties to currentFigures
+// Add callback for pushing new properties to currentFigures. And run EventListener
 currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler))
 
 lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler(lineWidthButton)});
@@ -114,6 +118,10 @@ lineStyleButton.addEventListener('change', function() {currentProperties.lineSty
 lineColorButton.addEventListener('change', function() {currentProperties.lineColorHandler(lineColorButton)});
 fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)});
 isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)})
+
+// Run PointerHandler
+
+// canvas.addEventListener('mousemove', function(event) { pointer.renderPointerHandler(event, testObj.drawnFigures) })
 
 
 // Switch figure

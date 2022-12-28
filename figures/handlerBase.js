@@ -4,8 +4,8 @@ export default class HandlerBase {
     constructor(canvas) {
         
         this._canvas = canvas;
-        this._canvas.onmousedown = this._mouseDownHandler.bind(this);
-        this._canvas.onmousemove = this._mouseMoveHandler.bind(this);
+        this._canvas.onmousedown = this._mouseDownHandler?.bind(this);
+        this._canvas.onmousemove = this._mouseMoveHandler?.bind(this);
         this._canvas.onmouseup = this._mouseUpHandler?.bind(this) || null;
         this._canvas.oncontextmenu = this._ctxMenuHandler?.bind(this) || null;
 

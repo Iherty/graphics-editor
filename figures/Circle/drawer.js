@@ -1,12 +1,10 @@
+import DrawerBase from '../DrawerBase.js';
 
-export default class CircleDrawer {
+export default class CircleDrawer extends DrawerBase {
     #avrX;
     #avrY;
     #radius;
 
-    constructor(ctx) {
-        this.ctx = ctx;
-    }
 
     draw(circle) { // [x1, y1, x2, y2]
 
