@@ -50,7 +50,7 @@ export default class PolylineHandlers  extends HandlerBase{
         // At this stage, the final look of the figure is ready. 
         // We can save it and send it on request to other functions and classes so that they can work with it. 
         this._figureCreatedCallbacks.forEach(item => item(this._figure));
-        this._figure = new Polyline();
+        this._figure.coordinates = [];
     }
 
 }

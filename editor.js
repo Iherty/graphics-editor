@@ -30,6 +30,7 @@ let lineColorButton = document.querySelector('.properties-form-lineColor');
 let fillColorButton = document.querySelector('.properties-form-fillColor');
 let isFillButton = document.querySelector('.properties-form-isFill');
 let clearButton = document.getElementById('clearCanvas');
+let pointerButton = document.getElementById('pointer');
 
 let circleDrawer = new CircleDrawer(ctx);
 let lineDrawer = new LineDrawer(ctx);
@@ -50,6 +51,9 @@ let testObj = {
         
         if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) { 
             this.drawnFigures.push(clone);
+
+            // Массив с координатами coordinates Array(34) length 34. Юзер в начале много раз нажимал одну точку, только потом начал рисовать.
+            // Данная проверка в if смотрит только на первые 4 координата. И если они одинаковы, то не пушит в массив
         }
         
     },
@@ -119,9 +123,11 @@ lineColorButton.addEventListener('change', function() {currentProperties.lineCol
 fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)});
 isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)})
 
-// Run PointerHandler
 
-// canvas.addEventListener('mousemove', function(event) { pointer.renderPointerHandler(event, testObj.drawnFigures) })
+// Run PointerHandler
+pointerButton.addEventListener('click', function() {
+    canvas.addEventListener('mousemove', renderPointer)
+})
 
 
 // Switch figure
@@ -171,8 +177,13 @@ function remove() {
     currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler));
     currentProperties.updatePropToCurrent();
     currentButton.style.backgroundColor = 'greenyellow';
+    canvas.removeEventListener('mousemove', renderPointer);
 }
 
 
 // Animation func
 requestAnimationFrame(testObj.animation.bind(testObj));
+
+function renderPointer(event) {
+    pointer.renderPointerHandler(event, testObj.drawnFigures)
+}
