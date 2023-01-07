@@ -1,5 +1,6 @@
 
 export default class HandlerBase {
+    #minDistance = 4;
 
     constructor(canvas) {
         
@@ -35,6 +36,20 @@ export default class HandlerBase {
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
         return [x, y];
+    }
+
+    isMoreThanMinDistance(startXY, endXY) { // [x1, y1, x2, y2]
+        let maxX = Math.max(startXY[0], endXY[0]);
+        let minX = Math.min(startXY[0], endXY[0]);
+        let maxY = Math.max(startXY[1], endXY[1]);
+        let minY = Math.min(startXY[1], endXY[1]);
+
+        if ( (maxX - minX > this.#minDistance) || (maxY - minY > this.#minDistance) ) {
+            return true;
+        }
+
+        return false;
+
     }
 
 }

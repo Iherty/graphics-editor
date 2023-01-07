@@ -23,10 +23,14 @@ export default class LineHandlers extends HandlerBase{
         
         this.#endXY = this.getMousePos(canvas, event);
         
-        if (this._figure.coordinates.length === 2) {
-            this._figure.coordinates.push(this.#endXY[0], this.#endXY[1]);
-        } else {
-            this._figure.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1])
+        if (this.isMoreThanMinDistance(this.#startXY, this.#endXY)) {
+
+            if (this._figure.coordinates.length === 2) {
+                this._figure.coordinates.push(this.#endXY[0], this.#endXY[1]);
+            } else {
+                this._figure.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
+            }
+
         }
     
     }
@@ -34,9 +38,12 @@ export default class LineHandlers extends HandlerBase{
     _mouseUpHandler(event) { 
         this.#isMouseDown = false;
         this.#endXY = this.getMousePos(canvas, event);
-        this._figure.coordinates.push(this.#endXY[0], this.#endXY[1]);
 
-        this._figureCreatedCallbacks.forEach(item => item(this._figure));
+        if (this.isMoreThanMinDistance(this.#startXY, this.#endXY)) {
+            this._figure.coordinates.splice(2, 2, this.#endXY[0], this.#endXY[1]);
+        }
+
+        if (this._figure.coordinates.length > 2) this._figureCreatedCallbacks.forEach(item => item(this._figure));
         this._figure.coordinates = [];
     }
 

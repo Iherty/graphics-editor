@@ -48,6 +48,8 @@ let testObj = {
 
         let clone = {...figure};
         clone.__proto__ = figure.__proto__;
+
+        console.log(clone)
         
         if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) { 
             this.drawnFigures.push(clone);
