@@ -14,7 +14,7 @@ import PolygonHandlers from './figures/Polygon/handler.js';
 import Polygon from './figures/Polygon/polygon.js';
 import PolygonDrawer from './figures/Polygon/drawer.js';
 import PropertiesHandler from './common/Properties.js';
-import PointerHandler from './common/Pointer.js';
+import PointerHandlers from './common/Pointer.js';
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
@@ -37,7 +37,7 @@ let lineDrawer = new LineDrawer(ctx);
 let polylineDrawer = new PolylineDrawer(ctx);
 let ellipseDrawer = new EllipseDrawer(ctx);
 let polygonDrawer = new PolygonDrawer(ctx);
-let pointer = new PointerHandler(canvas, ctx);
+// let pointer = new PointerHandlers(canvas, ctx);
 
 
 let testObj = {
@@ -64,6 +64,7 @@ let testObj = {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        // Redrawing all drawn figures
         for (let i = 0; i < this.drawnFigures.length; i++) {
 
             if (this.drawnFigures[i] instanceof Line) {
@@ -79,7 +80,8 @@ let testObj = {
             }
         }
 
-        if (currentHandler._figure.coordinates.length > 0) {
+        // Redrawing frames of the current figure
+        if (currentHandler._figure?.coordinates.length > 0) {
 
             if (currentHandler._figure instanceof Line) {
                 lineDrawer.draw(currentHandler._figure);
@@ -174,25 +176,21 @@ function remove() {
 
         case pointerButton:
             currentHandler.removeHandler();
-            canvas.addEventListener('mousemove', coursorToPointer);
+            currentHandler = new PointerHandlers(canvas, ctx, testObj.drawnFigures);
             currentButton = pointerButton;
     }
 
     if (this !== pointerButton) {
         currentProperties.addFigurePropUpdateEventListener(currentHandler.getUpdateProperties.bind(currentHandler));
         currentProperties.updatePropToCurrent();
-        canvas.removeEventListener('mousemove', coursorToPointer);
     }
 
-    currentButton.style.backgroundColor = '#ce86fd';
+    currentButton.style.backgroundColor = '#6601fe';
 }
 
 
 // Animation func
 requestAnimationFrame(testObj.animation.bind(testObj));
 
-function coursorToPointer(event) {
-    pointer.coursorToPointerHandler(event, testObj.drawnFigures);
-}
 
 
