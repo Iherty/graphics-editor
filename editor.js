@@ -79,18 +79,18 @@ let testObj = {
             }
         }
 
-        if (curruntHandler._figure.coordinates.length > 0) {
+        if (currentHandler._figure.coordinates.length > 0) {
 
-            if (curruntHandler._figure instanceof Line) {
-                lineDrawer.draw(curruntHandler._figure);
-            } else if (curruntHandler._figure instanceof Circle) {
-                circleDrawer.draw(curruntHandler._figure);
-            } else if (curruntHandler._figure instanceof Polyline) {
-                polylineDrawer.draw(curruntHandler._figure);
-            } else if (curruntHandler._figure instanceof Ellipse) {
-                ellipseDrawer.draw(curruntHandler._figure)
-            } else if (curruntHandler._figure instanceof Polygon) {
-                polygonDrawer.draw(curruntHandler._figure)
+            if (currentHandler._figure instanceof Line) {
+                lineDrawer.draw(currentHandler._figure);
+            } else if (currentHandler._figure instanceof Circle) {
+                circleDrawer.draw(currentHandler._figure);
+            } else if (currentHandler._figure instanceof Polyline) {
+                polylineDrawer.draw(currentHandler._figure);
+            } else if (currentHandler._figure instanceof Ellipse) {
+                ellipseDrawer.draw(currentHandler._figure)
+            } else if (currentHandler._figure instanceof Polygon) {
+                polygonDrawer.draw(currentHandler._figure)
             }
             
         }
@@ -107,18 +107,19 @@ let testObj = {
     }
 }
 
-// Run default figure, Properties, init currentButton 
-let curruntHandler = new LineHandlers(canvas);
+// Run default figure, Properties, currentButton 
+let currentHandler = new LineHandlers(canvas);
 let currentProperties = new PropertiesHandler();
 let currentButton = lineButton;
 
-// Add callback for pushing createdEventFigures to testObj.drawnFigures
-curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+// Add EventListener which is push createdFigure to testObj.drawnFigures.
+currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
 
 
-// Add callback for pushing new properties to currentFigures. And run EventListener
-currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler))
+// Add EventListener which is push newProperties to currentFigureHandler
+currentProperties.addFigurePropUpdateEventListener(currentHandler.getUpdateProperties.bind(currentHandler))
 
+// Run PropertiesEventListener
 lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler(lineWidthButton)});
 lineStyleButton.addEventListener('change', function() {currentProperties.lineStyleHandler(lineStyleButton)});
 lineColorButton.addEventListener('change', function() {currentProperties.lineColorHandler(lineColorButton)});
@@ -126,66 +127,72 @@ fillColorButton.addEventListener('change', function(e) {currentProperties.fillCo
 isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)})
 
 
-// Run PointerHandler
-pointerButton.addEventListener('click', function() {
-    canvas.addEventListener('mousemove', renderPointer)
-})
-
-
-// Switch figure
+// Switch buttons
 circleButton.addEventListener('click', remove);
 lineButton.addEventListener('click', remove);
 polylineButton.addEventListener('click', remove);
 ellipseButton.addEventListener('click', remove);
 polygonButton.addEventListener('click', remove);
 clearButton.addEventListener('click', remove)
+pointerButton.addEventListener('click', remove);
+
 
 function remove() {
 
     currentButton.style.backgroundColor = null;
 
-    switch(this) {
-        case circleButton: curruntHandler = new CircleHandlers(canvas);
-        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
-        currentButton = circleButton;
-        break;
+    switch (this) {
+        case circleButton: currentHandler = new CircleHandlers(canvas);
+            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+            currentButton = circleButton;
+            break;
 
-        case lineButton: curruntHandler = new LineHandlers(canvas); 
-        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
-        currentButton = lineButton;
-        break;
+        case lineButton: currentHandler = new LineHandlers(canvas);
+            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+            currentButton = lineButton;
+            break;
 
-        case polylineButton: curruntHandler = new PolylineHandlers(canvas);
-        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
-        currentButton = polylineButton;
-        break;
+        case polylineButton: currentHandler = new PolylineHandlers(canvas);
+            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+            currentButton = polylineButton;
+            break;
 
-        case ellipseButton: curruntHandler = new EllipseHandlers(canvas);
-        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
-        currentButton = ellipseButton;
-        break;
+        case ellipseButton: currentHandler = new EllipseHandlers(canvas);
+            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+            currentButton = ellipseButton;
+            break;
 
-        case polygonButton: curruntHandler = new PolygonHandlers(canvas);
-        curruntHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
-        currentButton = polygonButton;
-        break;
+        case polygonButton: currentHandler = new PolygonHandlers(canvas);
+            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+            currentButton = polygonButton;
+            break;
 
-        case clearButton: 
-        testObj.clearAnimation.bind(testObj)();
-        currentButton = clearButton;
-        break;
+        case clearButton:
+            testObj.clearAnimation.bind(testObj)();
+            currentButton = clearButton;
+            break;
+
+        case pointerButton:
+            currentHandler.removeHandler();
+            canvas.addEventListener('mousemove', coursorToPointer);
+            currentButton = pointerButton;
     }
-    
-    currentProperties.addFigurePropUpdateEventListener(curruntHandler.getUpdateProperties.bind(curruntHandler));
-    currentProperties.updatePropToCurrent();
-    currentButton.style.backgroundColor = 'greenyellow';
-    canvas.removeEventListener('mousemove', renderPointer);
+
+    if (this !== pointerButton) {
+        currentProperties.addFigurePropUpdateEventListener(currentHandler.getUpdateProperties.bind(currentHandler));
+        currentProperties.updatePropToCurrent();
+        canvas.removeEventListener('mousemove', coursorToPointer);
+    }
+
+    currentButton.style.backgroundColor = '#ce86fd';
 }
 
 
 // Animation func
 requestAnimationFrame(testObj.animation.bind(testObj));
 
-function renderPointer(event) {
-    pointer.renderPointerHandler(event, testObj.drawnFigures)
+function coursorToPointer(event) {
+    pointer.coursorToPointerHandler(event, testObj.drawnFigures);
 }
+
+

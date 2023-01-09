@@ -16,8 +16,8 @@ export default class PointerHandler extends HandlerBase {
     #polylineDrawer;
     #polygonDrawer;
     #startXY;
-    #inShape;
-    #selectedShapeIndex;
+    #isInShape;
+    #selectedShapeIndex = null;
 
     constructor(canvas, ctx) {
         super(canvas);
@@ -80,25 +80,33 @@ export default class PointerHandler extends HandlerBase {
     
     }
 
-    renderPointerHandler(event, drawnFigures) {
+    coursorToPointerHandler(event, drawnFigures) {
+
+        event.preventDefault();
+        event.stopPropagation();
+        
         this.#startXY = this.getMousePos(canvas, event);
         
         for (let i = 0; i < drawnFigures.length; i++) {
-            this.#inShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], drawnFigures[i]);
+            this.#isInShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], drawnFigures[i]);
             
-            if (this.#inShape) {
+            if (this.#isInShape) {
                 this.#selectedShapeIndex = drawnFigures[i];
                 break;
             }
         }
 
-        if (this.#inShape) {
+        if (this.#isInShape) {
             canvas.style.cursor = 'pointer';
             
         } else {
             canvas.style.cursor = 'default';
         }
+
     }
+
+
     
+
 
 }
