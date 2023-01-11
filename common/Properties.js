@@ -36,11 +36,9 @@ export default class PropertiesHandlers {
 
         if (event.type === 'click') {
 
-            console.log(this.#isFillButton.checked)
             if (this.#isFillButton.checked) {
 
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465"));
-                this.#fillColorButton.value = "#e66465";
                 this.#storeFiguresProperties['fillColor'] = this.#fillColorButton;
 
             } else {
@@ -60,16 +58,13 @@ export default class PropertiesHandlers {
     updateFigurePropertiesToCurrent() {
 
         for (let key in this.#storeFiguresProperties) {
-            console.log(key, this.#storeFiguresProperties[key])
-            console.log(this.#storeFiguresProperties['fillColor']);
 
             if (key === 'width') {
                 this.#FiguresPropUpdateCallbacks.forEach(item => item(key, +(this.#storeFiguresProperties[key].value) ) );
             } else if ( this.#storeFiguresProperties[key] === null ) {
-                // this.#FiguresPropUpdateCallbacks.forEach(item => item(key, null) );
+                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, null) );
                 
             } else {
-                console.log(key, this.#storeFiguresProperties[key])
                 this.#FiguresPropUpdateCallbacks.forEach(item => item(key, this.#storeFiguresProperties[key].value ));
             }
         
