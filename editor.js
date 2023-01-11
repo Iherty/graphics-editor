@@ -13,34 +13,37 @@ import EllipseHandlers from './figures/Ellipse/handler.js';
 import PolygonHandlers from './figures/Polygon/handler.js';
 import Polygon from './figures/Polygon/polygon.js';
 import PolygonDrawer from './figures/Polygon/drawer.js';
-import PropertiesHandler from './common/Properties.js';
+import PropertiesHandlers from './common/Properties.js';
 import PointerHandlers from './common/Pointer.js';
 
 let canvas = document.getElementById('canvas'); 
 let ctx = canvas.getContext('2d');
 
+// Figure changing buttons
 let lineButton = document.getElementById('line');
 let circleButton = document.getElementById('circle');
 let polylineButton = document.getElementById('polyline');
 let ellipseButton = document.getElementById('ellipse');
 let polygonButton = document.getElementById('polygon');
+let pointerButton = document.getElementById('pointer');
+
+// Property buttons
+let clearButton = document.getElementById('clearCanvas');
 let lineWidthButton = document.querySelector('.properties-form-lineWidth');
 let lineStyleButton = document.querySelector('.properties-form-lineType');
 let lineColorButton = document.querySelector('.properties-form-lineColor');
 let fillColorButton = document.querySelector('.properties-form-fillColor');
 let isFillButton = document.querySelector('.properties-form-isFill');
-let clearButton = document.getElementById('clearCanvas');
-let pointerButton = document.getElementById('pointer');
 
+// Init figure drawing func
 let circleDrawer = new CircleDrawer(ctx);
 let lineDrawer = new LineDrawer(ctx);
 let polylineDrawer = new PolylineDrawer(ctx);
 let ellipseDrawer = new EllipseDrawer(ctx);
 let polygonDrawer = new PolygonDrawer(ctx);
-// let pointer = new PointerHandlers(canvas, ctx);
 
 
-let testObj = {
+let obj = {
     drawnFigures: [],
     cache: [],
 
@@ -97,7 +100,7 @@ let testObj = {
             
         }
 
-        requestAnimationFrame(testObj.animation.bind(testObj));
+        requestAnimationFrame(obj.animation.bind(obj));
     },
 
     clearAnimation() {
@@ -111,22 +114,22 @@ let testObj = {
 
 // Run default figure, Properties, currentButton 
 let currentHandler = new LineHandlers(canvas);
-let currentProperties = new PropertiesHandler();
+let currentProperties = new PropertiesHandlers(lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton);
 let currentButton = lineButton;
 
 // Add EventListener which is push createdFigure to testObj.drawnFigures.
-currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
+currentHandler.addFigureCreatedEventListener(obj.getFigure.bind(obj));
 
 
 // Add EventListener which is push newProperties to currentFigureHandler
-currentProperties.addFigurePropUpdateEventListener(currentHandler.getUpdateProperties.bind(currentHandler))
+currentProperties.addFigurePropertyUpdateEventListener(currentHandler.getUpdateProperty.bind(currentHandler))
 
 // Run PropertiesEventListener
-lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler(lineWidthButton)});
-lineStyleButton.addEventListener('change', function() {currentProperties.lineStyleHandler(lineStyleButton)});
-lineColorButton.addEventListener('change', function() {currentProperties.lineColorHandler(lineColorButton)});
-fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)});
-isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e, isFillButton, fillColorButton)})
+lineWidthButton.addEventListener('change', function() {currentProperties.lineWidthHandler()});
+lineStyleButton.addEventListener('change', function() {currentProperties.lineStyleHandler()});
+lineColorButton.addEventListener('change', function() {currentProperties.lineColorHandler()});
+fillColorButton.addEventListener('change', function(e) {currentProperties.fillColorHandler(e)});
+isFillButton.addEventListener('click', function(e) {currentProperties.fillColorHandler(e)})
 
 
 // Switch buttons
@@ -142,55 +145,54 @@ pointerButton.addEventListener('click', remove);
 function remove() {
 
     currentButton.style.backgroundColor = null;
+    currentHandler.removeHandler();
 
     switch (this) {
         case circleButton: currentHandler = new CircleHandlers(canvas);
-            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
             currentButton = circleButton;
             break;
 
         case lineButton: currentHandler = new LineHandlers(canvas);
-            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
             currentButton = lineButton;
             break;
 
         case polylineButton: currentHandler = new PolylineHandlers(canvas);
-            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
             currentButton = polylineButton;
             break;
 
         case ellipseButton: currentHandler = new EllipseHandlers(canvas);
-            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
             currentButton = ellipseButton;
             break;
 
         case polygonButton: currentHandler = new PolygonHandlers(canvas);
-            currentHandler.addFigureCreatedEventListener(testObj.getFigure.bind(testObj));
             currentButton = polygonButton;
             break;
 
         case clearButton:
-            testObj.clearAnimation.bind(testObj)();
+            obj.clearAnimation.bind(obj)();
             currentButton = clearButton;
             break;
 
         case pointerButton:
-            currentHandler.removeHandler();
-            currentHandler = new PointerHandlers(canvas, ctx, testObj.drawnFigures);
+            currentHandler = new PointerHandlers(canvas, ctx, 
+            obj.drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton);
             currentButton = pointerButton;
     }
 
     if (this !== pointerButton) {
-        currentProperties.addFigurePropUpdateEventListener(currentHandler.getUpdateProperties.bind(currentHandler));
-        currentProperties.updatePropToCurrent();
+        currentHandler.addFigureCreatedEventListener(obj.getFigure.bind(obj));
+        // currentProperties.updateFigurePropertiesToCurrent();
     }
+    
+    currentProperties.addFigurePropertyUpdateEventListener(currentHandler.getUpdateProperty.bind(currentHandler));
+    currentProperties.updateFigurePropertiesToCurrent();
 
-    currentButton.style.backgroundColor = '#6601fe';
+    currentButton.style.backgroundColor = '#3d9bff';
 }
 
 
 // Animation func
-requestAnimationFrame(testObj.animation.bind(testObj));
+requestAnimationFrame(obj.animation.bind(obj));
 
 
 

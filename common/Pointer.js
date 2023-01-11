@@ -10,22 +10,30 @@ import PolylineDrawer from '../figures/Polyline/drawer.js';
 
 
 export default class PointerHandlers extends HandlerBase {
-    #ellipseDrawer;
-    #polylineDrawer;
-    #polygonDrawer;
-    #drawnFigures
+    #ellipseDrawer = new EllipseDrawer(this._ctx);
+    #polylineDrawer = new PolylineDrawer(this._ctx);
+    #polygonDrawer = new PolygonDrawer(this._ctx);
+    #lineWidthButton;
+    #lineStyleButton;
+    #lineColorButton; 
+    #isFillButton; 
+    #fillColorButton;
+    #drawnFigures;
     #startXY;
     #isInShape;
-    #selectedShapeIndex = null;
+    _figure;
     #isDragging;
+    #isClickDown = false;
 
-    constructor(canvas, ctx, drawnFigures) {
-        super(canvas);
-        this._ctx = ctx;
+    constructor(canvas, ctx, drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton) {
+        super(canvas, ctx);
         this.#drawnFigures = drawnFigures;
-        this.#ellipseDrawer = new EllipseDrawer(this._ctx);
-        this.#polylineDrawer = new PolylineDrawer(this._ctx);
-        this.#polygonDrawer = new PolygonDrawer(this._ctx);
+
+        this.#lineWidthButton = lineWidthButton;
+        this.#lineStyleButton = lineStyleButton;
+        this.#lineColorButton = lineColorButton;
+        this.#isFillButton = isFillButton;
+        this.#fillColorButton = fillColorButton;
     }
 
     #isMouseInShape(mx, my, figure) { // mouseX, mouseY
@@ -70,6 +78,32 @@ export default class PointerHandlers extends HandlerBase {
     
     }
 
+
+    _mouseDownHandler() {
+
+        if (!this._figure) {
+            return
+        }
+
+        
+        // Sets the properties of the selected shape to the page
+        this.#lineWidthButton.value = this._figure.width;
+        this.#lineColorButton.value = this._figure.lineColor;
+        this.#lineStyleButton.value = this._figure.style;
+        
+        if (this._figure.fillColor) {
+            this.#fillColorButton.value = this._figure.fillColor;
+            this.#isFillButton.checked = true;
+        } else {
+            this.#isFillButton.checked = false;
+            this.#fillColorButton.value = "#e66465";
+        }
+        
+        
+        this.#isDragging = true;
+        this.#isClickDown = true;
+    }
+
     _mouseMoveHandler(event) {
         this.#startXY = this.getMousePos(canvas, event);
 
@@ -77,7 +111,7 @@ export default class PointerHandlers extends HandlerBase {
             this.#isInShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], this.#drawnFigures[i]);
             
             if (this.#isInShape) {
-                this.#selectedShapeIndex = this.#drawnFigures[i];
+                this._figure = this.#drawnFigures[i];
                 break;
             }
         }
@@ -89,31 +123,7 @@ export default class PointerHandlers extends HandlerBase {
         }
         
     }
-
     
-    _mouseDownHandler() {
-
-        if (!this.#selectedShapeIndex) {
-            console.log('f');
-            return
-        }
-
-        this.#isDragging = true;
-
-        // Sets the properties of the selected shape to the page
-        lineWidthButton.value = selectedShapeIndex.width;
-        lineColorButton.value = selectedShapeIndex.lineColor;
-        lineStyleButton.value = selectedShapeIndex.style;
-
-        if (this.#selectedShapeIndex.fillColor) {
-            fillColorButton.value = this.#selectedShapeIndex.fillColor;
-            isFillButton.checked = true;
-        } else {
-            isFillButton.checked = false;
-            fillColorButton.value = "#e66465";
-        }
-
-    }
 
 
 

@@ -1,56 +1,77 @@
 
-export default class PropertiesHandler {
+export default class PropertiesHandlers {
     
     #FiguresPropUpdateCallbacks = [];
-    #storeFiguresLastProp = {};
+    #storeFiguresCurrentProperties = {};
+    #lineWidthButton;
+    #lineStyleButton;
+    #lineColorButton; 
+    #isFillButton; 
+    #fillColorButton;
 
-    lineWidthHandler(lineWidthButton) {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('width', +lineWidthButton.value)); 
-        this.#storeFiguresLastProp['width'] = +lineWidthButton.value;
+    constructor(lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton) {
+        this.#lineWidthButton = lineWidthButton;
+        this.#lineStyleButton = lineStyleButton;
+        this.#lineColorButton = lineColorButton;
+        this.#isFillButton = isFillButton;
+        this.#fillColorButton = fillColorButton;
     }
 
-    lineStyleHandler(lineStyleButton) {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('style', lineStyleButton.value));
-        this.#storeFiguresLastProp['style'] = lineStyleButton.value;
+    lineWidthHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('width', +this.#lineWidthButton.value)); 
+        this.#storeFiguresCurrentProperties['width'] = this.#lineWidthButton;
     }
 
-    lineColorHandler(lineColorButton) {
-        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', lineColorButton.value));
-        this.#storeFiguresLastProp['lineColor'] = lineColorButton.value;
+    lineStyleHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('style', this.#lineStyleButton.value));
+        this.#storeFiguresCurrentProperties['style'] = this.#lineStyleButton;
     }
 
-    fillColorHandler(event, isFillButton, fillColorButton) {
+    lineColorHandler() {
+        this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', this.#lineColorButton.value));
+        this.#storeFiguresCurrentProperties['lineColor'] = this.#lineColorButton;
+    }
+
+    fillColorHandler(event) {
 
         if (event.type === 'click') {
 
-            if (isFillButton.checked) {
+            if (this.#isFillButton.checked) {
 
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465"));
-                this.#storeFiguresLastProp['fillColor'] = "#e66465";
+                this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
 
             } else {
 
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', null));
-                this.#storeFiguresLastProp['fillColor'] = null;
+                this.#fillColorButton = null;
+                this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
             }
 
         } else {
 
-            this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', fillColorButton.value));
-            this.#storeFiguresLastProp['fillColor'] = fillColorButton.value;
-            isFillButton.checked = true;
+            this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', this.#fillColorButton.value));
+            this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
+            this.#isFillButton.checked = true;
         }
     
     }
 
-    updatePropToCurrent() {
+    updateFigurePropertiesToCurrent() {
 
-        for (let key in this.#storeFiguresLastProp) {
-            this.#FiguresPropUpdateCallbacks.forEach(item => item(key, this.#storeFiguresLastProp[key])); 
+        for (let key in this.#storeFiguresCurrentProperties) {
+
+            if (key === 'width') {
+                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, +(this.#storeFiguresCurrentProperties[key].value) ));
+            } else {
+                // Ошибка когда после указателя выбирается фигуры другая. 
+                // Обновляются данные null.value = ошибка 
+                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, this.#storeFiguresCurrentProperties[key].value)); 
+            }
         }
     }
 
-    addFigurePropUpdateEventListener(callback) {
+    addFigurePropertyUpdateEventListener(callback) {
         this.#FiguresPropUpdateCallbacks.push(callback);
     }
 

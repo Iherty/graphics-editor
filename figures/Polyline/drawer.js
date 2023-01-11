@@ -6,10 +6,10 @@ export default class PolylineDrawer extends DrawerBase {
 
         this.ctx.beginPath();
 
-        if (polygon.style === 'solid') this.ctx.setLineDash([]);
-        if (polygon.style === 'dashed') this.ctx.setLineDash([20, 7]);
-        if (polygon.style === 'dotted') this.ctx.setLineDash([3, 7]);
-        if (polygon.style === 'dash-dotted') this.ctx.setLineDash([20, 7, 3, 7]);
+        if (polyline.style === 'solid') this.ctx.setLineDash([]);
+        if (polyline.style === 'dashed') this.ctx.setLineDash([20, 7]);
+        if (polyline.style === 'dotted') this.ctx.setLineDash([3, 7]);
+        if (polyline.style === 'dash-dotted') this.ctx.setLineDash([20, 7, 3, 7]);
 
         for(let i = 0; i < polyline.coordinates.length;) {
             this.ctx.lineTo(polyline.coordinates[i], polyline.coordinates[i + 1]);

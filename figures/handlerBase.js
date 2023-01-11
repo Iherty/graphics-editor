@@ -2,9 +2,10 @@
 export default class HandlerBase {
     #minDistance = 4;
 
-    constructor(canvas) {
+    constructor(canvas, ctx) {
         
         this._canvas = canvas;
+        this._ctx = ctx;
         this._canvas.onmousedown = this._mouseDownHandler?.bind(this);
         this._canvas.onmousemove = this._mouseMoveHandler?.bind(this);
         this._canvas.onmouseup = this._mouseUpHandler?.bind(this) || null;
@@ -23,9 +24,10 @@ export default class HandlerBase {
         this._figureCreatedCallbacks.push(callback);
     }
 
-    getUpdateProperties(property, value) {
-        
-        if (this._figure.hasOwnProperty(property)) {
+    getUpdateProperty(property, value) {
+        console.log(this);
+
+        if (this._figure?.hasOwnProperty(property)) {
             this._figure[property] = value;
         }
 
