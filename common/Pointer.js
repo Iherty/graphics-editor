@@ -23,6 +23,7 @@ export default class PointerHandlers extends HandlerBase {
     #isInShape;
     _figure;
     #isDragging;
+    #selectedFigure;
 
     constructor(canvas, ctx, drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton) {
         super(canvas, ctx);
@@ -81,6 +82,10 @@ export default class PointerHandlers extends HandlerBase {
     _mouseDownHandler() {
  
         // Sets the properties of the selected shape to the page
+        this._figure = this.#selectedFigure;
+
+        // Когда заново выбираешь фигуру. Рисуешь. Потом новую фигуру. Выбираешь указатель. И меняешь настройки, то меняются у двух фигур. Новый баг
+
         this.#lineWidthButton.value = this._figure.width;
         this.#lineColorButton.value = this._figure.lineColor;
         this.#lineStyleButton.value = this._figure.style;
@@ -104,7 +109,7 @@ export default class PointerHandlers extends HandlerBase {
                 this.#isInShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], this.#drawnFigures[i]);
 
                 if (this.#isInShape) {
-                    this._figure = this.#drawnFigures[i];
+                    this.#selectedFigure = this.#drawnFigures[i];
                     break;
                 }
             }
