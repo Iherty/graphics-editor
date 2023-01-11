@@ -23,7 +23,6 @@ export default class PointerHandlers extends HandlerBase {
     #isInShape;
     _figure;
     #isDragging;
-    #isClickDown = false;
 
     constructor(canvas, ctx, drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton) {
         super(canvas, ctx);
@@ -80,12 +79,7 @@ export default class PointerHandlers extends HandlerBase {
 
 
     _mouseDownHandler() {
-
-        if (!this._figure) {
-            return
-        }
-
-        
+ 
         // Sets the properties of the selected shape to the page
         this.#lineWidthButton.value = this._figure.width;
         this.#lineColorButton.value = this._figure.lineColor;
@@ -101,26 +95,26 @@ export default class PointerHandlers extends HandlerBase {
         
         
         this.#isDragging = true;
-        this.#isClickDown = true;
     }
 
     _mouseMoveHandler(event) {
-        this.#startXY = this.getMousePos(canvas, event);
+            this.#startXY = this.getMousePos(canvas, event);
 
-        for (let i = 0; i < this.#drawnFigures.length; i++) {
-            this.#isInShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], this.#drawnFigures[i]);
-            
-            if (this.#isInShape) {
-                this._figure = this.#drawnFigures[i];
-                break;
+            for (let i = 0; i < this.#drawnFigures.length; i++) {
+                this.#isInShape = this.#isMouseInShape(this.#startXY[0], this.#startXY[1], this.#drawnFigures[i]);
+
+                if (this.#isInShape) {
+                    this._figure = this.#drawnFigures[i];
+                    break;
+                }
             }
-        }
 
-        if (this.#isInShape) {
-            canvas.style.cursor = 'pointer'; 
-        } else {
-            canvas.style.cursor = 'default';
-        }
+            if (this.#isInShape) {
+                canvas.style.cursor = 'pointer';
+            } else {
+                canvas.style.cursor = 'default';
+            }
+        
         
     }
     

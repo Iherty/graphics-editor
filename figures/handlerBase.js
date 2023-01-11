@@ -25,9 +25,8 @@ export default class HandlerBase {
     }
 
     getUpdateProperty(property, value) {
-        console.log(this);
 
-        if (this._figure?.hasOwnProperty(property)) {
+        if (this._figure.hasOwnProperty(property)) {
             this._figure[property] = value;
         }
 

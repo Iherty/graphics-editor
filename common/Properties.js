@@ -2,7 +2,7 @@
 export default class PropertiesHandlers {
     
     #FiguresPropUpdateCallbacks = [];
-    #storeFiguresCurrentProperties = {};
+    #storeFiguresProperties = {};
     #lineWidthButton;
     #lineStyleButton;
     #lineColorButton; 
@@ -19,39 +19,39 @@ export default class PropertiesHandlers {
 
     lineWidthHandler() {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('width', +this.#lineWidthButton.value)); 
-        this.#storeFiguresCurrentProperties['width'] = this.#lineWidthButton;
+        this.#storeFiguresProperties['width'] = this.#lineWidthButton;
     }
 
     lineStyleHandler() {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('style', this.#lineStyleButton.value));
-        this.#storeFiguresCurrentProperties['style'] = this.#lineStyleButton;
+        this.#storeFiguresProperties['style'] = this.#lineStyleButton;
     }
 
     lineColorHandler() {
         this.#FiguresPropUpdateCallbacks.forEach(item => item('lineColor', this.#lineColorButton.value));
-        this.#storeFiguresCurrentProperties['lineColor'] = this.#lineColorButton;
+        this.#storeFiguresProperties['lineColor'] = this.#lineColorButton;
     }
 
     fillColorHandler(event) {
 
         if (event.type === 'click') {
 
+            console.log(this.#isFillButton.checked)
             if (this.#isFillButton.checked) {
 
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', "#e66465"));
-                this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
+                this.#fillColorButton.value = "#e66465";
+                this.#storeFiguresProperties['fillColor'] = this.#fillColorButton;
 
             } else {
-
                 this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', null));
-                this.#fillColorButton = null;
-                this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
+                this.#storeFiguresProperties['fillColor'] = null;
             }
 
         } else {
 
             this.#FiguresPropUpdateCallbacks.forEach(item => item('fillColor', this.#fillColorButton.value));
-            this.#storeFiguresCurrentProperties['fillColor'] = this.#fillColorButton;
+            this.#storeFiguresProperties['fillColor'] = this.#fillColorButton;
             this.#isFillButton.checked = true;
         }
     
@@ -59,15 +59,20 @@ export default class PropertiesHandlers {
 
     updateFigurePropertiesToCurrent() {
 
-        for (let key in this.#storeFiguresCurrentProperties) {
+        for (let key in this.#storeFiguresProperties) {
+            console.log(key, this.#storeFiguresProperties[key])
+            console.log(this.#storeFiguresProperties['fillColor']);
 
             if (key === 'width') {
-                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, +(this.#storeFiguresCurrentProperties[key].value) ));
+                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, +(this.#storeFiguresProperties[key].value) ) );
+            } else if ( this.#storeFiguresProperties[key] === null ) {
+                // this.#FiguresPropUpdateCallbacks.forEach(item => item(key, null) );
+                
             } else {
-                // Ошибка когда после указателя выбирается фигуры другая. 
-                // Обновляются данные null.value = ошибка 
-                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, this.#storeFiguresCurrentProperties[key].value)); 
+                console.log(key, this.#storeFiguresProperties[key])
+                this.#FiguresPropUpdateCallbacks.forEach(item => item(key, this.#storeFiguresProperties[key].value ));
             }
+        
         }
     }
 

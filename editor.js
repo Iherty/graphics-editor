@@ -174,18 +174,17 @@ function remove() {
             break;
 
         case pointerButton:
-            currentHandler = new PointerHandlers(canvas, ctx, 
-            obj.drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton);
+            debugger;
+            currentHandler = new PointerHandlers(canvas, ctx, obj.drawnFigures, lineWidthButton, lineStyleButton, lineColorButton, isFillButton, fillColorButton);
             currentButton = pointerButton;
     }
 
     if (this !== pointerButton) {
         currentHandler.addFigureCreatedEventListener(obj.getFigure.bind(obj));
-        // currentProperties.updateFigurePropertiesToCurrent();
+        currentProperties.updateFigurePropertiesToCurrent();
     }
     
     currentProperties.addFigurePropertyUpdateEventListener(currentHandler.getUpdateProperty.bind(currentHandler));
-    currentProperties.updateFigurePropertiesToCurrent();
 
     currentButton.style.backgroundColor = '#3d9bff';
 }
