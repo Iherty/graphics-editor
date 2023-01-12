@@ -26,10 +26,10 @@ export default class HandlerBase {
 
     getUpdateProperty(property, value) {
 
-        if (this._figure.hasOwnProperty(property)) {
+        if (this._figure?.hasOwnProperty(property)) {
             this._figure[property] = value;
         }
-
+        
     }
 
     getMousePos(canvas, event) { 

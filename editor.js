@@ -51,8 +51,6 @@ let obj = {
 
         let clone = {...figure};
         clone.__proto__ = figure.__proto__;
-
-        console.log(clone)
         
         if ( !(clone.coordinates[1] === clone.coordinates[3] && clone.coordinates[0] === clone.coordinates[2]) ) { 
             this.drawnFigures.push(clone);
@@ -144,9 +142,11 @@ pointerButton.addEventListener('click', remove);
 
 function remove() {
 
+    if (currentHandler instanceof PointerHandlers) currentHandler._figure = null;
     currentButton.style.backgroundColor = null;
     currentHandler.removeHandler();
 
+    // Фигура окружность - заливка да. Указатель - выбрал фигуру линия, галочка с заливки убралась. Фигура окружность, галочки нету. НО при рисовании с заливкой. 
     switch (this) {
         case circleButton: currentHandler = new CircleHandlers(canvas);
             currentButton = circleButton;

@@ -21,7 +21,7 @@ export default class PointerHandlers extends HandlerBase {
     #drawnFigures;
     #startXY;
     #isInShape;
-    _figure;
+    _figure = null;
     #isDragging;
     #selectedFigure;
 
@@ -83,8 +83,7 @@ export default class PointerHandlers extends HandlerBase {
  
         // Sets the properties of the selected shape to the page
         this._figure = this.#selectedFigure;
-
-        // Когда заново выбираешь фигуру. Рисуешь. Потом новую фигуру. Выбираешь указатель. И меняешь настройки, то меняются у двух фигур. Новый баг
+        console.log(this._figure)
 
         this.#lineWidthButton.value = this._figure.width;
         this.#lineColorButton.value = this._figure.lineColor;

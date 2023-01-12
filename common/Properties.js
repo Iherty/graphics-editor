@@ -1,7 +1,9 @@
+import PointerHandlers from "./Pointer.js";
 
 export default class PropertiesHandlers {
     
     #FiguresPropUpdateCallbacks = [];
+    // Старый колбек Pointer остается в массиве. А в старом хендлере содержится старая выбранная фигура из drawnFigures. В итоге она меняется вместе с новоц фигурой. 
     #storeFiguresProperties = {};
     #lineWidthButton;
     #lineStyleButton;
@@ -56,7 +58,10 @@ export default class PropertiesHandlers {
     }
 
     updateFigurePropertiesToCurrent() {
-
+        // Нужно чтобы он обновял данные только новым PointerHandler. А так получается старые, кто уже был в коллбек, тоже обрабатывает. Соответственно и this._figure старый
+        // Есть еще один баг. На канвасе есть фигуры заполненные. Указателем нажимаем. Потом выбираем другую фигуру, кнопку. И у выбранной фигуры исчезает заливка? Как и почему?
+        // Это связано с предыдущим багом, что старые указатели остаются в колбеке и фигуры тоже с ними меняются. 
+        // Решено. Удалить позднее этот комментарий
         for (let key in this.#storeFiguresProperties) {
 
             if (key === 'width') {
